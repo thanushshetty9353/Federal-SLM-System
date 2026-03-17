@@ -5,8 +5,8 @@ from backend.models.database import init_db
 
 app = FastAPI(title="Federated Document Intelligence")
 
-# Create database tables when server starts
+# Initialize DB
 init_db()
 
-# Register API routes
+# Register routes
 app.include_router(documents.router)

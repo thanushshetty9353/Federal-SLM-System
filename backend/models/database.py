@@ -29,4 +29,6 @@ def get_db():
 # Create tables automatically
 def init_db():
     import backend.models.document_model
+    import backend.models.ocr_model   # ✅ ADD THIS
+
     Base.metadata.create_all(bind=engine)

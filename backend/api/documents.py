@@ -6,6 +6,8 @@ import os
 
 from backend.models.database import get_db
 from backend.models.document_model import Document
+from backend.models.ocr_model import OCRResult   # ✅ NEW
+from backend.services.ocr_service import extract_text  # ✅ NEW
 from backend.utils.config import STORAGE_PATH
 
 router = APIRouter(prefix="/documents", tags=["Documents"])
@@ -30,7 +32,7 @@ async def upload_document(
     with open(file_location, "rb") as f:
         file_hash = hashlib.sha256(f.read()).hexdigest()
 
-    # Create database record
+    # Create document record
     new_doc = Document(
         org_id=org_id,
         file_name=file.filename,
@@ -41,7 +43,23 @@ async def upload_document(
     db.commit()
     db.refresh(new_doc)
 
+    # 🔥 STEP 2: RUN OCR AUTOMATICALLY
+    try:
+        extracted_text = extract_text(file_location)
+
+        ocr_entry = OCRResult(
+            document_id=new_doc.doc_id,
+            extracted_text=extracted_text
+        )
+
+        db.add(ocr_entry)
+        db.commit()
+
+    except Exception as e:
+        extracted_text = f"OCR Failed: {str(e)}"
+
     return {
-        "message": "Document uploaded successfully",
-        "doc_id": new_doc.doc_id
+        "message": "Document uploaded and OCR processed",
+        "doc_id": new_doc.doc_id,
+        "extracted_text": extracted_text
     }
