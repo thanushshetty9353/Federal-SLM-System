@@ -2,6 +2,8 @@ from transformers import AutoTokenizer, AutoModelForCausalLM
 import torch
 import json
 
+from backend.models.schema_model import SchemaConfig
+
 # =========================
 # MODEL CONFIG
 # =========================
@@ -34,41 +36,17 @@ def load_model():
 
 
 # =========================
-# REQUIRED FIELDS
-# =========================
-
-REQUIRED_FIELDS = [
-    "patient_name",
-    "cancer_type",
-    "stage",
-    "treatment",
-    "hospital"
-]
-
-DEFAULT_VALUES = {
-    "patient_name": "unknown",
-    "cancer_type": "unknown",
-    "stage": "unknown",
-    "treatment": "unknown",
-    "hospital": "unknown"
-}
-
-
-# =========================
-# PROMPT (STRICT CHAT FORMAT 🔥)
+# PROMPT
 # =========================
 
 def build_prompt(text):
     return f"""<|system|>
 You are a strict medical information extractor.
 
-Rules:
-- ONLY return valid JSON
-- NO explanation
-- NO extra text
+Return ONLY JSON.
 
 <|user|>
-Extract this into JSON with fields:
+Extract:
 patient_name, cancer_type, stage, treatment, hospital
 
 Text:
@@ -85,27 +63,25 @@ Text:
 def run_model(text):
     load_model()
 
-    prompt = build_prompt(text)
-
-    inputs = tokenizer(prompt, return_tensors="pt")
+    inputs = tokenizer(build_prompt(text), return_tensors="pt")
 
     outputs = model.generate(
         **inputs,
         max_new_tokens=200,
-        temperature=0.0,        # 🔥 deterministic
+        temperature=0.0,
         do_sample=False,
         eos_token_id=tokenizer.eos_token_id
     )
 
     result = tokenizer.decode(outputs[0], skip_special_tokens=True)
 
-    print("\n🧠 RAW OUTPUT:\n", result)   # debug
+    print("\n🧠 RAW OUTPUT:\n", result)
 
     return result
 
 
 # =========================
-# EXTRACT JSON (ROBUST 🔥)
+# EXTRACT JSON
 # =========================
 
 def extract_json(output):
@@ -113,17 +89,14 @@ def extract_json(output):
         start = output.find("{")
         end = output.rfind("}")
 
-        if start != -1 and end != -1 and end > start:
+        if start != -1 and end != -1:
             json_str = output[start:end+1]
-
-            json_str = json_str.replace("\n", " ")
-            json_str = json_str.replace("'", '"')
+            json_str = json_str.replace("\n", " ").replace("'", '"')
 
             data = json.loads(json_str)
 
-            # Reject empty JSON
-            if all(v == "" for v in data.values()):
-                return {}
+            if isinstance(data, list) and len(data) > 0:
+                data = data[0]
 
             return data
 
@@ -134,7 +107,7 @@ def extract_json(output):
 
 
 # =========================
-# FALLBACK EXTRACTION 🔥
+# FALLBACK
 # =========================
 
 def fallback_extract(text):
@@ -150,90 +123,81 @@ def fallback_extract(text):
 
 
 # =========================
-# FILL MISSING FIELDS
-# =========================
-
-def fill_missing_fields(data):
-    filled = {}
-    missing = []
-
-    for field in REQUIRED_FIELDS:
-        value = data.get(field)
-
-        if value and str(value).strip():
-            filled[field] = value
-        else:
-            filled[field] = DEFAULT_VALUES[field]
-            missing.append(field)
-
-    return filled, missing
-
-
-# =========================
-# DOC TYPE DETECTION
+# DOC TYPE
 # =========================
 
 def detect_doc_type(text):
-    text = text.lower()
-
-    if "cancer" in text:
+    if "cancer" in text.lower():
         return "cancer_record"
-    elif "invoice" in text:
-        return "invoice"
     return "general"
+
+
+# =========================
+# FETCH SCHEMA FROM DB
+# =========================
+
+def get_core_fields(db, doc_type):
+    schema = db.query(SchemaConfig).filter(
+        SchemaConfig.doc_type == doc_type
+    ).first()
+
+    if not schema:
+        return []
+
+    return json.loads(schema.core_fields)
+
+
+# =========================
+# APPLY SCHEMA
+# =========================
+
+def apply_schema(data, doc_type, db):
+    core_fields = get_core_fields(db, doc_type)
+
+    core = {}
+    dynamic = {}
+    missing = []
+
+    for field in core_fields:
+        if data.get(field):
+            core[field] = data[field]
+        else:
+            core[field] = "unknown"
+            missing.append(field)
+
+    for key, value in data.items():
+        if key not in core_fields:
+            dynamic[key] = value
+
+    return core, dynamic, missing
 
 
 # =========================
 # MAIN PIPELINE
 # =========================
 
-def process_text(text):
+def process_text(text, db):
     raw_output = run_model(text)
 
     extracted_json = extract_json(raw_output)
 
-    # 🔥 fallback if model fails
     if not extracted_json:
         print("⚠️ Using fallback extraction")
         extracted_json = fallback_extract(text)
 
-    filled_data, missing_fields = fill_missing_fields(extracted_json)
+    doc_type = detect_doc_type(text)
 
-    final_output = {
-        "doc_type": detect_doc_type(text),
-
-        "required_fields": filled_data,
-
-        "extra_fields": extracted_json,
-
-        "metadata": {
-            "missing_fields": missing_fields,
-            "imputed": len(missing_fields) > 0
-        },
-
-        "raw_output": raw_output
-    }
-
-    return final_output
-
-
-# =========================
-# SAVE TO DATABASE
-# =========================
-
-from sqlalchemy.orm import Session
-from backend.models.slm_model import SLMInsights
-
-
-def save_to_db(db: Session, doc_id: int, result: dict):
-    record = SLMInsights(
-        doc_id=doc_id,
-        structured_output=json.dumps(result["required_fields"]),
-        metadata_json=json.dumps(result["metadata"])
+    core, dynamic, missing = apply_schema(
+        extracted_json, doc_type, db
     )
 
-    db.add(record)
-    db.commit()
-    db.refresh(record)
-
-    return record
+    return {
+        "doc_type": doc_type,
+        "core_fields": core,
+        "dynamic_fields": dynamic,
+        "metadata": {
+            "missing_fields": missing,
+            "imputed": len(missing) > 0
+        },
+        "raw_output": raw_output
+    }
