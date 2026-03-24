@@ -9,6 +9,7 @@ class SchemaConfig(Base):
 
     doc_type = Column(String, unique=True)
 
-    core_fields = Column(Text)
+    core_fields = Column(Text)        # JSON string
+    dynamic_fields = Column(Text)     # ✅ NEW
 
     num_core_fields = Column(Integer)

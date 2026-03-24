@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from backend.api import documents, slm, schema
 from backend.models.database import init_db
-from backend.models import ocr_model, slm_model, schema_model   # 👈 ADD THIS
+from backend.models import ocr_model, slm_model, schema_model  
 
 app = FastAPI(title="Federated Document Intelligence")
 
