@@ -1,5 +1,7 @@
-# Virtual Environment
+# Virtual Environments
 venv/
+venv_ocr/
+venv_fl/
 .env
 
 # Python cache
