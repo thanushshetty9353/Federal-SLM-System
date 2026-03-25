@@ -1,19 +1,32 @@
 from fastapi import FastAPI, UploadFile, File
-import shutil, os
-from ocr_engine import extract_text
+import shutil
+import os
+from ocr_service.ocr_engine import extract_text
 
 app = FastAPI()
 
 UPLOAD_DIR = "temp"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
+
 @app.post("/ocr")
 async def run_ocr(file: UploadFile = File(...)):
-    path = os.path.join(UPLOAD_DIR, file.filename)
+    file_path = os.path.join(UPLOAD_DIR, file.filename)
 
-    with open(path, "wb") as buffer:
-        shutil.copyfileobj(file.file, buffer)
+    try:
+        # Save file
+        with open(file_path, "wb") as buffer:
+            shutil.copyfileobj(file.file, buffer)
 
-    text = extract_text(path)
+        # Run OCR
+        text = extract_text(file_path)
 
-    return {"text": text}
+        return {"text": text}
+
+    except Exception as e:
+        return {"error": str(e)}
+
+    finally:
+        # Cleanup file
+        if os.path.exists(file_path):
+            os.remove(file_path)

@@ -1,13 +1,7 @@
+import requests
 import os
 
-# 🔥 CRITICAL FIXES (must be first)
-os.environ["FLAGS_use_mkldnn"] = "0"
-os.environ["PADDLE_PDX_DISABLE_MODEL_SOURCE_CHECK"] = "True"
-
-from paddleocr import PaddleOCR
-
-# Initialize OCR
-ocr = PaddleOCR(use_angle_cls=True, lang='en')
+OCR_URL = "http://127.0.0.1:9001/ocr"
 
 
 def extract_text(file_path: str):
@@ -15,20 +9,14 @@ def extract_text(file_path: str):
         raise FileNotFoundError(f"{file_path} not found")
 
     try:
-        result = ocr.ocr(file_path)
+        with open(file_path, "rb") as f:
+            response = requests.post(
+                OCR_URL,
+                files={"file": f}
+            )
+
+        response.raise_for_status()
+        return response.json().get("text", "")
+
     except Exception as e:
-        return f"OCR Engine Error: {str(e)}"
-
-    extracted_text = []
-
-    if result is None:
-        return ""
-
-    for line in result:
-        if line is None:
-            continue
-        for word in line:
-            if word and len(word) > 1:
-                extracted_text.append(word[1][0])
-
-    return " ".join(extracted_text)
+        return f"OCR API Error: {str(e)}"
