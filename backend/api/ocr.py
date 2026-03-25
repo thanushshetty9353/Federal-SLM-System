@@ -1,9 +1,7 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
-
 from services.ocr_service import extract_text
 from services.slm_service import process_text, save_to_db
-
 from models.database import get_db
 from models.ocr_model import OCRResult
 

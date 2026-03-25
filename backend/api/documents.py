@@ -1,9 +1,8 @@
-from fastapi import APIRouter, UploadFile, File, Depends, HTTPException
-from sqlalchemy.orm import Session
 import shutil
 import hashlib
 import os
-
+from fastapi import APIRouter, UploadFile, File, Depends, HTTPException
+from sqlalchemy.orm import Session
 from backend.models.database import get_db
 from backend.models.document_model import Document
 from backend.models.ocr_model import OCRResult
@@ -22,24 +21,17 @@ async def upload_document(
     db: Session = Depends(get_db)
 ):
     try:
-        # =========================
-        # SAVE FILE
-        # =========================
+       
         os.makedirs(STORAGE_PATH, exist_ok=True)
         file_location = os.path.join(STORAGE_PATH, file.filename)
 
         with open(file_location, "wb") as buffer:
             shutil.copyfileobj(file.file, buffer)
 
-        # =========================
-        # GENERATE HASH
-        # =========================
+       
         with open(file_location, "rb") as f:
             file_hash = hashlib.sha256(f.read()).hexdigest()
 
-        # =========================
-        # STORE DOCUMENT
-        # =========================
         new_doc = Document(
             org_id=org_id,
             file_name=file.filename,
