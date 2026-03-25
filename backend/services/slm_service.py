@@ -1,6 +1,7 @@
 from transformers import AutoTokenizer, AutoModelForCausalLM
 import torch
 import json
+import re
 
 from backend.models.schema_model import SchemaConfig
 from backend.services.parser import parse_key_value
@@ -24,24 +25,26 @@ def load_model():
 
         model = AutoModelForCausalLM.from_pretrained(
             model_name,
-            torch_dtype=torch.float32,
-            device_map=None
+            torch_dtype=torch.float32
         )
 
         print("✅ TinyLlama loaded successfully")
 
 
 # =========================
-# DETECT DOC TYPE
+# DETECT DOC TYPE (FALLBACK)
 # =========================
 def detect_doc_type(text):
     text = text.lower()
 
-    if "paracetamol" in text or "prescription" in text:
-        return "medical"
+    if "contract" in text:
+        return "employment_contract"
 
     if "invoice" in text:
         return "invoice"
+
+    if "prescription" in text:
+        return "medical"
 
     return "general"
 
@@ -55,10 +58,7 @@ def get_schema(db, doc_type):
     ).first()
 
     if not schema:
-        return {
-            "core_fields": [],
-            "dynamic_fields": []
-        }
+        return None
 
     return {
         "core_fields": json.loads(schema.core_fields),
@@ -68,30 +68,30 @@ def get_schema(db, doc_type):
 
 
 # =========================
-# 🔥 STRONG PROMPT (FIXED)
+# BUILD PROMPT (FINAL)
 # =========================
 def build_prompt(text, fields):
-    fields_str = ", ".join(fields)
+
+    format_example = "\n".join([f"{f}:" for f in fields])
 
     return f"""
-You are an expert information extraction system.
+You are a strict information extraction system.
 
-Extract ONLY the following fields from the text.
+Extract the following fields from the text.
 
 Fields:
-{fields_str}
+{', '.join(fields)}
+
+Return output EXACTLY in this format:
+
+{format_example}
 
 Rules:
-- Return ONLY field_name: value
-- DO NOT return field names alone
-- DO NOT repeat the input
-- DO NOT explain anything
-- If value is missing, leave it blank
-
-Example:
-patient_name: John
-treatment: Paracetamol
-disease: Viral fever
+- Write real values after each field
+- DO NOT write placeholders like <value>
+- If not found, leave empty after colon
+- Do NOT explain anything
+- Do NOT repeat input text
 
 Text:
 {text}
@@ -101,7 +101,7 @@ Answer:
 
 
 # =========================
-# 🔥 CLEAN OUTPUT (FIXED)
+# CLEAN OUTPUT
 # =========================
 def clean_output(output, fields):
     lines = output.split("\n")
@@ -113,7 +113,7 @@ def clean_output(output, fields):
         if ":" in line:
             key = line.split(":")[0].strip().lower()
 
-            if key in fields:
+            if key in fields and "<value>" not in line:
                 cleaned.append(line)
 
     return "\n".join(cleaned)
@@ -129,10 +129,9 @@ def run_model(prompt, fields):
 
     outputs = model.generate(
         **inputs,
-        max_new_tokens=80,   # 🔥 slightly increased
+        max_new_tokens=120,
         temperature=0.0,
-        do_sample=False,
-        eos_token_id=tokenizer.eos_token_id
+        do_sample=False
     )
 
     result = tokenizer.decode(outputs[0], skip_special_tokens=True)
@@ -149,42 +148,62 @@ def run_model(prompt, fields):
 # =========================
 # APPLY SCHEMA
 # =========================
-def apply_schema(parsed, core_fields):
+def apply_schema(parsed, core_fields, dynamic_fields):
     core = {}
     dynamic = {}
-    missing = []
 
     for field in core_fields:
-        value = parsed.get(field, "")
-        if value:
-            core[field] = value
-        else:
-            core[field] = ""
-            missing.append(field)
+        core[field] = parsed.get(field, "")
 
-    for key, value in parsed.items():
-        if key not in core_fields:
-            dynamic[key] = value
+    for field in dynamic_fields:
+        dynamic[field] = parsed.get(field, "")
 
-    return core, dynamic, missing
+    return core, dynamic
+
+
+# =========================
+# 🔥 FINAL FALLBACK (FIXED REGEX)
+# =========================
+def fallback_extraction(text, core, dynamic):
+
+    # Employee
+    if "employee_name" in core and not core["employee_name"]:
+        match = re.search(r'employee\s+([A-Z][a-z]+\s[A-Z][a-z]+)', text)
+        if match:
+            core["employee_name"] = match.group(1)
+
+    # Employer
+    if "employer_name" in core and not core.get("employer_name"):
+        match = re.search(r'between\s+(.+?)\s+and', text)
+        if match:
+            core["employer_name"] = match.group(1).strip()
+
+    # 🔥 Job Role (FIXED)
+    if "job_role" in dynamic and not dynamic.get("job_role"):
+        match = re.search(r'work as (?:a|an)?\s*([A-Za-z\s]+?)(?:\.|,|$)', text)
+        if match:
+            dynamic["job_role"] = match.group(1).strip()
+
+    # 🔥 Start Date (FIXED)
+    if "start_date" in dynamic and not dynamic.get("start_date"):
+        match = re.search(r'starts? from\s+([A-Za-z0-9\s]+?)(?:\.|,|$)', text)
+        if match:
+            dynamic["start_date"] = match.group(1).strip()
+
+    return core, dynamic
 
 
 # =========================
 # MAIN PIPELINE
 # =========================
-def process_text(text, db):
+def process_text(text, db, doc_type=None):
 
-    doc_type = detect_doc_type(text)
+    if not doc_type:
+        doc_type = detect_doc_type(text)
 
     schema = get_schema(db, doc_type)
 
-    core_fields = schema["core_fields"]
-    dynamic_fields = schema["dynamic_fields"]
-
-    all_fields = core_fields + dynamic_fields
-
-    # 🔥 If no schema, avoid useless call
-    if not all_fields:
+    if not schema:
         return {
             "doc_type": doc_type,
             "core_fields": {},
@@ -196,13 +215,35 @@ def process_text(text, db):
             "raw_output": "No schema defined"
         }
 
-    prompt = build_prompt(text, all_fields)
+    core_fields = schema["core_fields"]
+    dynamic_fields = schema["dynamic_fields"]
 
+    all_fields = core_fields + dynamic_fields
+
+    print("📌 Fields used:", all_fields)
+    print("📌 TEXT:", text)
+
+    # Run model
+    prompt = build_prompt(text, all_fields)
     raw_output = run_model(prompt, all_fields)
 
     parsed = parse_key_value(raw_output, all_fields)
 
-    core, dynamic, missing = apply_schema(parsed, core_fields)
+    core, dynamic = apply_schema(parsed, core_fields, dynamic_fields)
+
+    # 🔥 Apply fallback (VERY IMPORTANT)
+    core, dynamic = fallback_extraction(text, core, dynamic)
+
+    # 🔥 Correct missing calculation
+    missing = []
+
+    for k, v in core.items():
+        if not v:
+            missing.append(k)
+
+    for k, v in dynamic.items():
+        if not v:
+            missing.append(k)
 
     return {
         "doc_type": doc_type,
