@@ -12,8 +12,9 @@ from backend.models.slm_model import SLMInsights
 from backend.services.ocr_service import extract_text
 from backend.services.slm_service import process_text
 
-# 🔥 NEW IMPORTS
-from backend.services.parser_service import parse_multiple_records
+# 🔥 REMOVE parser import
+# from backend.services.parser_service import parse_multiple_records
+
 from backend.services.dataset_service import save_records
 
 from backend.utils.config import STORAGE_PATH
@@ -59,6 +60,8 @@ async def upload_document(
         # =========================
         extracted_text = extract_text(file_location)
 
+        print("\n📄 OCR TEXT:\n", extracted_text)
+
         if "Error" in extracted_text:
             raise Exception(extracted_text)
 
@@ -72,18 +75,22 @@ async def upload_document(
         db.refresh(ocr_entry)
 
         # =========================
-        # 🔥 NEW: PARSE MULTIPLE RECORDS
-        # =========================
-        records = parse_multiple_records(extracted_text)
-
-        # Save into dataset.json
-        save_records(records)
-
-        # =========================
-        # SLM
+        # 🔥 SLM EXTRACTION (MAIN LOGIC)
         # =========================
         slm_result = process_text(extracted_text, db)
 
+        # 🔥 Ensure list of records
+        if isinstance(slm_result, list):
+            records = slm_result
+        else:
+            records = [slm_result]
+
+        # 🔥 Save dataset
+        save_records(records)
+
+        # =========================
+        # SAVE SLM OUTPUT
+        # =========================
         slm_entry = SLMInsights(
             doc_id=ocr_entry.id,
             structured_output=str(slm_result),
