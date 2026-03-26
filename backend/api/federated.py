@@ -1,9 +1,10 @@
 from fastapi import APIRouter
 from backend.services.federated_service import start_federated_training
 
-router = APIRouter()
+router = APIRouter(prefix="/federated", tags=["Federated"])
 
-@router.post("/federated/train")
+
+@router.post("/train")
 def start_training():
     start_federated_training()
-    return {"message": "Federated training started"}
+    return {"message": "Federated training started successfully"}

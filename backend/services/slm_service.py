@@ -6,6 +6,9 @@ import re
 from backend.models.schema_model import SchemaConfig
 from backend.services.parser import parse_key_value
 
+# 🔥 NEW IMPORT (Federated dataset saving)
+from backend.services.local_dataset_service import save_record
+
 model_name = "TinyLlama/TinyLlama-1.1B-Chat-v1.0"
 
 tokenizer = None
@@ -178,13 +181,13 @@ def fallback_extraction(text, core, dynamic):
         if match:
             core["employer_name"] = match.group(1).strip()
 
-    # 🔥 Job Role (FIXED)
+    # Job Role
     if "job_role" in dynamic and not dynamic.get("job_role"):
         match = re.search(r'work as (?:a|an)?\s*([A-Za-z\s]+?)(?:\.|,|$)', text)
         if match:
             dynamic["job_role"] = match.group(1).strip()
 
-    # 🔥 Start Date (FIXED)
+    # Start Date
     if "start_date" in dynamic and not dynamic.get("start_date"):
         match = re.search(r'starts? from\s+([A-Za-z0-9\s]+?)(?:\.|,|$)', text)
         if match:
@@ -231,10 +234,10 @@ def process_text(text, db, doc_type=None):
 
     core, dynamic = apply_schema(parsed, core_fields, dynamic_fields)
 
-    # 🔥 Apply fallback (VERY IMPORTANT)
+    # 🔥 Apply fallback
     core, dynamic = fallback_extraction(text, core, dynamic)
 
-    # 🔥 Correct missing calculation
+    # Missing fields calculation
     missing = []
 
     for k, v in core.items():
@@ -245,7 +248,10 @@ def process_text(text, db, doc_type=None):
         if not v:
             missing.append(k)
 
-    return {
+    # =========================
+    # 🔥 FINAL RESULT
+    # =========================
+    result = {
         "doc_type": doc_type,
         "core_fields": core,
         "dynamic_fields": dynamic,
@@ -255,3 +261,10 @@ def process_text(text, db, doc_type=None):
         },
         "raw_output": raw_output
     }
+
+    # =========================
+    # 🔥 NEW: SAVE FOR FEDERATED LEARNING
+    # =========================
+    save_record(result)
+
+    return result

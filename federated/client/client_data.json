@@ -1,0 +1,55 @@
+[
+  {
+    "doc_type": "employment_contract",
+    "core_fields": {
+      "employee_name": "John Doe",
+      "employer_name": "ABC Company",
+      "salary": "5,000 USD"
+    },
+    "dynamic_fields": {
+      "job_role": "Software Engineer",
+      "start_date": "1 January 2022 The employee shall receive a salary of 5ooo UsD per month ABC Company John Doe"
+    },
+    "metadata": {
+      "missing_fields": [],
+      "imputed": false
+    },
+    "raw_output": "employee_name:\nemployer_name:\nsalary:\njob_role:\nstart_date:\nSalary: 5,000 USD\nSalary: 5,000 USD"
+  },
+  {
+    "doc_type": "employment_contract",
+    "core_fields": {
+      "employee_name": "",
+      "employer_name": "ABC Corp"
+    },
+    "dynamic_fields": {
+      "job_role": "",
+      "start_date": ""
+    },
+    "metadata": {
+      "missing_fields": [
+        "employee_name",
+        "job_role",
+        "start_date"
+      ],
+      "imputed": true
+    },
+    "raw_output": "employee_name:\nemployer_name:\njob_role:\nstart_date:"
+  },
+  {
+    "doc_type": "employment_contract",
+    "core_fields": {
+      "employee_name": "John Doe",
+      "employer_name": "ABC Company"
+    },
+    "dynamic_fields": {
+      "job_role": "Software Engineer",
+      "start_date": "1 January 2022"
+    },
+    "metadata": {
+      "missing_fields": [],
+      "imputed": false
+    },
+    "raw_output": "employee_name:\nemployer_name:\njob_role:\nstart_date:\nemployee_name: John Doe\nemployer_name: ABC Company\njob_role: Software Engineer\nstart_date: 1 January 2022"
+  }
+]
