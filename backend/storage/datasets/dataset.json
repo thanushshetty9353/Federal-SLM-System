@@ -1,7 +1,72 @@
 [
   {
+    "id": "842302.0",
     "name": "",
     "age": "",
-    "disease": ""
+    "tumor_size": "",
+    "cancer": ""
+  },
+  {
+    "id": "843786.0",
+    "name": "",
+    "age": "",
+    "tumor_size": "",
+    "cancer": ""
+  },
+  {
+    "id": "844981.0",
+    "name": "",
+    "age": "",
+    "tumor_size": "",
+    "cancer": ""
+  },
+  {
+    "id": "846226.0",
+    "name": "",
+    "age": "",
+    "tumor_size": "",
+    "cancer": ""
+  },
+  {
+    "id": "8510426.0",
+    "name": "",
+    "age": "",
+    "tumor_size": "",
+    "cancer": ""
+  },
+  {
+    "id": "8511133.0",
+    "name": "",
+    "age": "",
+    "tumor_size": "",
+    "cancer": ""
+  },
+  {
+    "id": "851509.0",
+    "name": "",
+    "age": "",
+    "tumor_size": "",
+    "cancer": ""
+  },
+  {
+    "id": "852552.0",
+    "name": "",
+    "age": "",
+    "tumor_size": "",
+    "cancer": ""
+  },
+  {
+    "id": "852763.0",
+    "name": "",
+    "age": "",
+    "tumor_size": "",
+    "cancer": ""
+  },
+  {
+    "id": "853201.0",
+    "name": "",
+    "age": "",
+    "tumor_size": "",
+    "cancer": ""
   }
 ]

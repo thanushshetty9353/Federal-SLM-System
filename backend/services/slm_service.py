@@ -1,33 +1,26 @@
-from transformers import AutoTokenizer, AutoModelForCausalLM
-import torch
 import json
+import os
 import re
 
+# 🔥 LOAD ENV FIRST (VERY IMPORTANT)
+from dotenv import load_dotenv
+load_dotenv(dotenv_path=".env")
+
+from groq import Groq
 from backend.models.schema_model import SchemaConfig
 
-model_name = "TinyLlama/TinyLlama-1.1B-Chat-v1.0"
-
-tokenizer = None
-model = None
-
 
 # =========================
-# LOAD MODEL
+# INIT GROQ CLIENT
 # =========================
-def load_model():
-    global tokenizer, model
+api_key = os.getenv("GROQ_API_KEY")
 
-    if tokenizer is None or model is None:
-        print("🔄 Loading TinyLlama model...")
+print("🔑 GROQ API KEY:", api_key)  # 🔥 DEBUG
 
-        tokenizer = AutoTokenizer.from_pretrained(model_name)
+if not api_key:
+    raise ValueError("❌ GROQ_API_KEY not found. Check your .env file")
 
-        model = AutoModelForCausalLM.from_pretrained(
-            model_name,
-            torch_dtype=torch.float32
-        )
-
-        print("✅ TinyLlama loaded successfully")
+client = Groq(api_key=api_key)
 
 
 # =========================
@@ -45,26 +38,34 @@ def get_schema(db, doc_type):
 
 
 # =========================
-# 🔥 IMPROVED PROMPT
+# CLEAN OCR TEXT
+# =========================
+def clean_text(text):
+    text = re.sub(r"\s+", " ", text)
+    return text.strip()
+
+
+# =========================
+# BUILD PROMPT
 # =========================
 def build_prompt(text, fields):
 
     return f"""
-You are an expert medical data extraction AI.
+You are an expert medical data extraction system.
 
-Your task is to extract ALL patient records from the given text.
+Extract ALL records from the OCR text.
 
 Each row corresponds to ONE patient.
 
 Fields:
 {fields}
 
-Return ONLY valid JSON ARRAY.
+Return ONLY JSON ARRAY.
 
 Example:
 [
-  {{"id": "1", "name": "Ravi", "age": "52", "tumor_size": "3.2", "cancer": "1"}},
-  {{"id": "2", "name": "Asha", "age": "45", "tumor_size": "1.8", "cancer": "1"}}
+  {{"id":"1","name":"Ravi","age":"52","tumor_size":"3.2","cancer":"1"}},
+  {{"id":"2","name":"Asha","age":"45","tumor_size":"1.8","cancer":"1"}}
 ]
 
 STRICT RULES:
@@ -72,8 +73,8 @@ STRICT RULES:
 - NO explanation
 - NO extra text
 - Extract ALL rows
-- If value missing, use ""
-- Do NOT skip any records
+- If value missing → ""
+- Do NOT skip records
 
 TEXT:
 {text}
@@ -81,57 +82,47 @@ TEXT:
 
 
 # =========================
-# RUN MODEL
+# CALL GROQ MODEL
 # =========================
-def run_model(prompt):
-    load_model()
+def call_groq(prompt):
 
-    inputs = tokenizer(prompt, return_tensors="pt")
-
-    outputs = model.generate(
-        **inputs,
-        max_new_tokens=512,            # 🔥 increased
-        temperature=0.0,
-        do_sample=False,
-        repetition_penalty=1.1         # 🔥 stabilizes output
+    response = client.chat.completions.create(
+        model="llama-3.1-8b-instant",
+        messages=[
+            {"role": "system", "content": "You extract structured data into JSON."},
+            {"role": "user", "content": prompt}
+        ],
+        temperature=0
     )
 
-    result = tokenizer.decode(outputs[0], skip_special_tokens=True)
-
-    print("\n📄 PROMPT:\n", prompt)
-    print("\n🧠 RAW MODEL OUTPUT:\n", result)
-
-    return result
+    return response.choices[0].message.content
 
 
 # =========================
-# 🔥 ROBUST JSON EXTRACTION
+# PARSE JSON (ROBUST)
 # =========================
 def extract_json(text):
     try:
-        # Find JSON array manually
         start = text.find("[")
         end = text.rfind("]")
 
         if start != -1 and end != -1:
             json_str = text[start:end + 1]
 
-            # Fix common issues
+            # 🔥 Fix common LLM issues
             json_str = json_str.replace("\n", " ")
             json_str = json_str.replace("'", '"')
 
-            # Remove trailing commas (common LLM issue)
+            # Remove trailing commas
             json_str = re.sub(r",\s*}", "}", json_str)
             json_str = re.sub(r",\s*]", "]", json_str)
 
             parsed = json.loads(json_str)
 
-            print("\n📦 PARSED RECORDS:\n", parsed)
-
             return parsed
 
     except Exception as e:
-        print("\n❌ JSON PARSE ERROR:", e)
+        print("❌ JSON PARSE ERROR:", e)
 
     return []
 
@@ -141,29 +132,37 @@ def extract_json(text):
 # =========================
 def process_text(text, db, doc_type="cancer"):
 
-    print("\n🚀 STARTING SLM PROCESSING")
+    print("\n🚀 USING GROQ SLM")
 
-    # 🔥 FORCE doc_type (important for now)
+    # Force doc_type
     doc_type = "cancer"
 
     schema = get_schema(db, doc_type)
 
     if not schema:
-        print("❌ No schema found for doc_type:", doc_type)
+        print("❌ No schema found")
         return []
 
     fields = list(schema.keys())
 
-    print("📌 FIELDS:", fields)
-    print("\n📄 OCR TEXT:\n", text)
+    # Clean OCR text
+    cleaned_text = clean_text(text)
 
-    prompt = build_prompt(text, fields)
+    print("\n📄 OCR TEXT:\n", cleaned_text)
 
-    raw_output = run_model(prompt)
+    prompt = build_prompt(cleaned_text, fields)
 
-    records = extract_json(raw_output)
+    try:
+        raw_output = call_groq(prompt)
 
-    if not records:
-        print("⚠️ WARNING: SLM returned empty records")
+        print("\n🧠 MODEL OUTPUT:\n", raw_output)
 
-    return records
+        records = extract_json(raw_output)
+
+        print("\n📦 PARSED RECORDS:\n", records)
+
+        return records
+
+    except Exception as e:
+        print("❌ GROQ ERROR:", e)
+        return []
