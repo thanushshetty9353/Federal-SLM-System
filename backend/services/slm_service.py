@@ -45,30 +45,37 @@ def get_schema(db, doc_type):
 
 
 # =========================
-# 🔥 NEW PROMPT (MULTI RECORD)
+# 🔥 IMPROVED PROMPT
 # =========================
 def build_prompt(text, fields):
 
     return f"""
-Extract ALL records from the text.
+You are an expert medical data extraction AI.
+
+Your task is to extract ALL patient records from the given text.
+
+Each row corresponds to ONE patient.
 
 Fields:
 {fields}
 
-Return ONLY JSON ARRAY format like:
+Return ONLY valid JSON ARRAY.
 
+Example:
 [
-  {{"field1": "", "field2": ""}},
-  {{"field1": "", "field2": ""}}
+  {{"id": "1", "name": "Ravi", "age": "52", "tumor_size": "3.2", "cancer": "1"}},
+  {{"id": "2", "name": "Asha", "age": "45", "tumor_size": "1.8", "cancer": "1"}}
 ]
 
-Rules:
-- Extract multiple records
-- Each row = one record
-- No explanation
-- Only JSON array
+STRICT RULES:
+- Output MUST be valid JSON
+- NO explanation
+- NO extra text
+- Extract ALL rows
+- If value missing, use ""
+- Do NOT skip any records
 
-Text:
+TEXT:
 {text}
 """
 
@@ -83,28 +90,48 @@ def run_model(prompt):
 
     outputs = model.generate(
         **inputs,
-        max_new_tokens=300,
+        max_new_tokens=512,            # 🔥 increased
         temperature=0.0,
-        do_sample=False
+        do_sample=False,
+        repetition_penalty=1.1         # 🔥 stabilizes output
     )
 
     result = tokenizer.decode(outputs[0], skip_special_tokens=True)
 
-    print("\n🧠 RAW OUTPUT:\n", result)
+    print("\n📄 PROMPT:\n", prompt)
+    print("\n🧠 RAW MODEL OUTPUT:\n", result)
 
     return result
 
 
 # =========================
-# PARSE JSON OUTPUT
+# 🔥 ROBUST JSON EXTRACTION
 # =========================
 def extract_json(text):
     try:
-        json_part = re.search(r"\[.*\]", text, re.DOTALL)
-        if json_part:
-            return json.loads(json_part.group())
-    except:
-        pass
+        # Find JSON array manually
+        start = text.find("[")
+        end = text.rfind("]")
+
+        if start != -1 and end != -1:
+            json_str = text[start:end + 1]
+
+            # Fix common issues
+            json_str = json_str.replace("\n", " ")
+            json_str = json_str.replace("'", '"')
+
+            # Remove trailing commas (common LLM issue)
+            json_str = re.sub(r",\s*}", "}", json_str)
+            json_str = re.sub(r",\s*]", "]", json_str)
+
+            parsed = json.loads(json_str)
+
+            print("\n📦 PARSED RECORDS:\n", parsed)
+
+            return parsed
+
+    except Exception as e:
+        print("\n❌ JSON PARSE ERROR:", e)
 
     return []
 
@@ -114,17 +141,29 @@ def extract_json(text):
 # =========================
 def process_text(text, db, doc_type="cancer"):
 
+    print("\n🚀 STARTING SLM PROCESSING")
+
+    # 🔥 FORCE doc_type (important for now)
+    doc_type = "cancer"
+
     schema = get_schema(db, doc_type)
 
     if not schema:
+        print("❌ No schema found for doc_type:", doc_type)
         return []
 
     fields = list(schema.keys())
+
+    print("📌 FIELDS:", fields)
+    print("\n📄 OCR TEXT:\n", text)
 
     prompt = build_prompt(text, fields)
 
     raw_output = run_model(prompt)
 
     records = extract_json(raw_output)
+
+    if not records:
+        print("⚠️ WARNING: SLM returned empty records")
 
     return records
