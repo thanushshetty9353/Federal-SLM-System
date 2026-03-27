@@ -2,7 +2,9 @@ import json
 import os
 import re
 
-# 🔥 LOAD ENV FIRST (VERY IMPORTANT)
+# =========================
+# LOAD ENV
+# =========================
 from dotenv import load_dotenv
 load_dotenv(dotenv_path=".env")
 
@@ -15,10 +17,10 @@ from backend.models.schema_model import SchemaConfig
 # =========================
 api_key = os.getenv("GROQ_API_KEY")
 
-print("🔑 GROQ API KEY:", api_key)  # 🔥 DEBUG
+print("🔑 GROQ API KEY:", api_key)
 
 if not api_key:
-    raise ValueError("❌ GROQ_API_KEY not found. Check your .env file")
+    raise ValueError("❌ GROQ_API_KEY not found")
 
 client = Groq(api_key=api_key)
 
@@ -46,16 +48,63 @@ def clean_text(text):
 
 
 # =========================
-# BUILD PROMPT
+# 🔥 SMART STRUCTURING (ORDER-INDEPENDENT)
+# =========================
+def structure_text_dynamic(text):
+
+    tokens = text.split()
+
+    # detect header
+    header = []
+    for token in tokens:
+        if re.match(r"[a-zA-Z_]+", token):
+            header.append(token)
+        else:
+            break
+
+    if not header:
+        print("⚠️ No header detected")
+        return text
+
+    print("📌 DETECTED HEADER:", header)
+
+    data = tokens[len(header):]
+
+    records = []
+
+    for i in range(0, len(data), len(header)):
+        row = data[i:i + len(header)]
+
+        if len(row) != len(header):
+            continue
+
+        record_parts = []
+
+        for col, val in zip(header, row):
+            record_parts.append(f"{col}: {val}")
+
+        records.append(", ".join(record_parts))
+
+    structured = "\n".join(records)
+
+    print("\n🧾 STRUCTURED TEXT:\n", structured)
+
+    return structured
+
+
+# =========================
+# 🔥 BUILD PROMPT (OCR CORRECTION ENABLED)
 # =========================
 def build_prompt(text, fields):
 
     return f"""
-You are an expert medical data extraction system.
+You are an expert medical data extraction AI.
 
-Extract ALL records from the OCR text.
+The OCR text may contain errors (for example: 4l'67 instead of 19.17).
 
-Each row corresponds to ONE patient.
+Your job:
+- Correct OCR mistakes intelligently
+- Extract accurate structured data
 
 Fields:
 {fields}
@@ -64,17 +113,18 @@ Return ONLY JSON ARRAY.
 
 Example:
 [
-  {{"id":"1","name":"Ravi","age":"52","tumor_size":"3.2","cancer":"1"}},
-  {{"id":"2","name":"Asha","age":"45","tumor_size":"1.8","cancer":"1"}}
+  {{"id":"842302","label":"1","radius_mean":"17.99"}}
 ]
 
-STRICT RULES:
-- Output MUST be valid JSON
+Rules:
+- Each line = one record
+- Fix OCR errors (l→1, '→.)
+- Ensure numbers are valid floats
+- Extract ALL records
+- Ignore extra fields
+- If missing → ""
 - NO explanation
-- NO extra text
-- Extract ALL rows
-- If value missing → ""
-- Do NOT skip records
+- ONLY JSON output
 
 TEXT:
 {text}
@@ -82,14 +132,14 @@ TEXT:
 
 
 # =========================
-# CALL GROQ MODEL
+# CALL GROQ
 # =========================
 def call_groq(prompt):
 
     response = client.chat.completions.create(
         model="llama-3.1-8b-instant",
         messages=[
-            {"role": "system", "content": "You extract structured data into JSON."},
+            {"role": "system", "content": "You output only JSON."},
             {"role": "user", "content": prompt}
         ],
         temperature=0
@@ -99,7 +149,7 @@ def call_groq(prompt):
 
 
 # =========================
-# PARSE JSON (ROBUST)
+# PARSE JSON (SAFE)
 # =========================
 def extract_json(text):
     try:
@@ -109,20 +159,19 @@ def extract_json(text):
         if start != -1 and end != -1:
             json_str = text[start:end + 1]
 
-            # 🔥 Fix common LLM issues
+            # clean formatting issues only
             json_str = json_str.replace("\n", " ")
             json_str = json_str.replace("'", '"')
 
-            # Remove trailing commas
             json_str = re.sub(r",\s*}", "}", json_str)
             json_str = re.sub(r",\s*]", "]", json_str)
 
-            parsed = json.loads(json_str)
+            print("\n🧹 CLEAN JSON:\n", json_str)
 
-            return parsed
+            return json.loads(json_str)
 
     except Exception as e:
-        print("❌ JSON PARSE ERROR:", e)
+        print("❌ JSON ERROR:", e)
 
     return []
 
@@ -134,9 +183,6 @@ def process_text(text, db, doc_type="cancer"):
 
     print("\n🚀 USING GROQ SLM")
 
-    # Force doc_type
-    doc_type = "cancer"
-
     schema = get_schema(db, doc_type)
 
     if not schema:
@@ -145,18 +191,23 @@ def process_text(text, db, doc_type="cancer"):
 
     fields = list(schema.keys())
 
-    # Clean OCR text
+    # Step 1: Clean OCR
     cleaned_text = clean_text(text)
 
     print("\n📄 OCR TEXT:\n", cleaned_text)
 
-    prompt = build_prompt(cleaned_text, fields)
+    # Step 2: Structure dynamically
+    structured_text = structure_text_dynamic(cleaned_text)
+
+    # Step 3: Build prompt
+    prompt = build_prompt(structured_text, fields)
 
     try:
         raw_output = call_groq(prompt)
 
         print("\n🧠 MODEL OUTPUT:\n", raw_output)
 
+        # Step 4: Parse JSON
         records = extract_json(raw_output)
 
         print("\n📦 PARSED RECORDS:\n", records)
