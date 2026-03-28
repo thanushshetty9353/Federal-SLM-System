@@ -1,19 +1,22 @@
-from federated.models.model import get_model, get_weights, set_weights
-from federated.client.dataset import load_data
+import torch
+import torch.nn as nn
+import torch.optim as optim
 
 
-def train_local_model(global_weights):
+def train_local_model(model, X, y, epochs=2):
+    criterion = nn.CrossEntropyLoss()
+    optimizer = optim.Adam(model.parameters(), lr=0.01)
 
-    model = get_model()
+    X = torch.tensor(X, dtype=torch.float32)
+    y = torch.tensor(y, dtype=torch.long)
 
-    if global_weights:
-        set_weights(model, global_weights)
+    model.train()
 
-    X, y = load_data()
+    for _ in range(epochs):
+        optimizer.zero_grad()
+        outputs = model(X)
+        loss = criterion(outputs, y)
+        loss.backward()
+        optimizer.step()
 
-    if len(X) == 0:
-        return get_weights(model)
-
-    model.fit(X, y)
-
-    return get_weights(model)
+    return model.state_dict()

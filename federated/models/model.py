@@ -15,4 +15,4 @@ class SimpleModel(nn.Module):
 
 
 def get_model():
-    return SimpleModel()
+    return SimpleModel() 
