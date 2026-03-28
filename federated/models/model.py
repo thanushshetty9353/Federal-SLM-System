@@ -6,8 +6,7 @@ class SimpleModel(nn.Module):
     def __init__(self):
         super(SimpleModel, self).__init__()
 
-        # Input = 1 (age)
-        # Output = 2 classes (Healthy / Disease)
+        # Example: binary classification
         self.fc = nn.Linear(1, 2)
 
     def forward(self, x):
@@ -15,4 +14,15 @@ class SimpleModel(nn.Module):
 
 
 def get_model():
-    return SimpleModel() 
+    return SimpleModel()
+
+
+def save_model(model, path):
+    torch.save(model.state_dict(), path)
+
+
+def load_model(path):
+    model = get_model()
+    model.load_state_dict(torch.load(path))
+    model.eval()
+    return model
