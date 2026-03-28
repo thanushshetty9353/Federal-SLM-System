@@ -1,15 +1,18 @@
-from sklearn.linear_model import LogisticRegression
-import numpy as np
+import torch
+import torch.nn as nn
+
+
+class SimpleModel(nn.Module):
+    def __init__(self):
+        super(SimpleModel, self).__init__()
+
+        # Input = 1 (age)
+        # Output = 2 classes (Healthy / Disease)
+        self.fc = nn.Linear(1, 2)
+
+    def forward(self, x):
+        return self.fc(x)
 
 
 def get_model():
-    return LogisticRegression()
-
-
-def get_weights(model):
-    return [model.coef_, model.intercept_]
-
-
-def set_weights(model, weights):
-    model.coef_ = weights[0]
-    model.intercept_ = weights[1]
+    return SimpleModel()
