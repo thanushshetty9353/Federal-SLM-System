@@ -1,23 +1,62 @@
 import json
 import os
+import hashlib
 
-# 🔥 Your correct storage path
-DATASET_PATH = "backend/storage/datasets/dataset.json"
+BASE_PATH = "backend/storage/datasets"
 
 
 # =========================
-# SAVE (OVERWRITE MODE)
+# GET FILE PATH PER CLIENT
 # =========================
-def save_records(records):
+def get_dataset_path(org_id):
+    os.makedirs(BASE_PATH, exist_ok=True)
+    return os.path.join(BASE_PATH, f"org_{org_id}.json")
+
+
+# =========================
+# CREATE HASH FOR RECORD
+# =========================
+def get_record_hash(record):
+    record_str = json.dumps(record, sort_keys=True)
+    return hashlib.sha256(record_str.encode()).hexdigest()
+
+
+# =========================
+# SAVE RECORDS (SMART LOGIC)
+# =========================
+def save_records(records, org_id):
     try:
-        # Create folder if not exists
-        os.makedirs(os.path.dirname(DATASET_PATH), exist_ok=True)
+        path = get_dataset_path(org_id)
 
-        # 🔥 OVERWRITE instead of append
-        with open(DATASET_PATH, "w") as f:
-            json.dump(records, f, indent=2)
+        # Load existing data
+        if os.path.exists(path):
+            with open(path, "r") as f:
+                existing_data = json.load(f)
+        else:
+            existing_data = []
 
-        print(f"✅ Dataset overwritten with {len(records)} records")
+        # Create hash set for duplicate detection
+        existing_hashes = set(
+            get_record_hash(r) for r in existing_data
+        )
+
+        new_records = []
+
+        for record in records:
+            record_hash = get_record_hash(record)
+
+            # Skip duplicate (same image case)
+            if record_hash not in existing_hashes:
+                new_records.append(record)
+                existing_hashes.add(record_hash)
+
+        # Append only new records
+        final_data = existing_data + new_records
+
+        with open(path, "w") as f:
+            json.dump(final_data, f, indent=2)
+
+        print(f"✅ Org {org_id}: Added {len(new_records)} new records")
 
     except Exception as e:
         print("❌ Error saving dataset:", e)
@@ -26,12 +65,14 @@ def save_records(records):
 # =========================
 # LOAD DATASET
 # =========================
-def load_dataset():
+def load_dataset(org_id):
     try:
-        if not os.path.exists(DATASET_PATH):
+        path = get_dataset_path(org_id)
+
+        if not os.path.exists(path):
             return []
 
-        with open(DATASET_PATH, "r") as f:
+        with open(path, "r") as f:
             return json.load(f)
 
     except Exception as e:
@@ -40,13 +81,15 @@ def load_dataset():
 
 
 # =========================
-# CLEAR DATASET (AFTER TRAINING)
+# CLEAR DATASET
 # =========================
-def clear_dataset():
+def clear_dataset(org_id):
     try:
-        if os.path.exists(DATASET_PATH):
-            os.remove(DATASET_PATH)
-            print("🧹 Dataset cleared after training")
+        path = get_dataset_path(org_id)
+
+        if os.path.exists(path):
+            os.remove(path)
+            print(f"🧹 Dataset cleared for org {org_id}")
 
     except Exception as e:
         print("❌ Error clearing dataset:", e)

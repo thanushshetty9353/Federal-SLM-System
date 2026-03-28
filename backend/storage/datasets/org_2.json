@@ -1,0 +1,58 @@
+[
+  {
+    "id": "853501.0",
+    "label": "1.0",
+    "radius_mean": "18.25",
+    "texture_mean": "11.12",
+    "perimeter_mean": "124.7",
+    "area_mean": "1045.0"
+  },
+  {
+    "id": "854112.0",
+    "label": "0.0",
+    "radius_mean": "13.98",
+    "texture_mean": "20.33",
+    "perimeter_mean": "91.22",
+    "area_mean": "611.5"
+  },
+  {
+    "id": "854981.0",
+    "label": "1.0",
+    "radius_mean": "12.75",
+    "texture_mean": "21.82",
+    "perimeter_mean": "87.5",
+    "area_mean": "408.8"
+  },
+  {
+    "id": "846226.0",
+    "label": "1.0",
+    "radius_mean": "13.67",
+    "texture_mean": "14.36",
+    "perimeter_mean": "132.4",
+    "area_mean": "566.6"
+  },
+  {
+    "id": "8511133.0",
+    "label": "0.0",
+    "radius_mean": "15.34",
+    "texture_mean": "14.26",
+    "perimeter_mean": "102.5",
+    "area_mean": "704.4"
+  },
+  {
+    "id": "852592.0",
+    "label": "1.0",
+    "radius_mean": "21.16",
+    "texture_mean": "23.04",
+    "perimeter_mean": "137.2",
+    "area_mean": "904.0"
+  },
+  {
+    "id": "852763.0",
+    "label": "1.0",
+    "radius_mean": "16.65",
+    "texture_mean": "21.38",
+    "perimeter_mean": "110.0",
+    "area_mean": "904.6"
+  }
+]

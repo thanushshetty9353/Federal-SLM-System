@@ -11,10 +11,6 @@ from backend.models.slm_model import SLMInsights
 
 from backend.services.ocr_service import extract_text
 from backend.services.slm_service import process_text
-
-# 🔥 REMOVE parser import
-# from backend.services.parser_service import parse_multiple_records
-
 from backend.services.dataset_service import save_records
 
 from backend.utils.config import STORAGE_PATH
@@ -39,7 +35,7 @@ async def upload_document(
             shutil.copyfileobj(file.file, buffer)
 
         # =========================
-        # HASH
+        # HASH (FOR DUPLICATE CHECK)
         # =========================
         with open(file_location, "rb") as f:
             file_hash = hashlib.sha256(f.read()).hexdigest()
@@ -75,21 +71,25 @@ async def upload_document(
         db.refresh(ocr_entry)
 
         # =========================
-        # 🔥 SLM EXTRACTION (MAIN LOGIC)
+        # 🔥 SLM EXTRACTION
         # =========================
         slm_result = process_text(extracted_text, db)
 
-        # 🔥 Ensure list of records
+        # Ensure list format
         if isinstance(slm_result, list):
             records = slm_result
         else:
             records = [slm_result]
 
-        # 🔥 Save dataset
-        save_records(records)
+        print(f"\n📦 FINAL RECORDS COUNT: {len(records)}")
 
         # =========================
-        # SAVE SLM OUTPUT
+        # 🔥 SAVE DATASET PER CLIENT
+        # =========================
+        save_records(records, org_id)
+
+        # =========================
+        # SAVE SLM OUTPUT (DB OPTIONAL)
         # =========================
         slm_entry = SLMInsights(
             doc_id=ocr_entry.id,
@@ -108,7 +108,9 @@ async def upload_document(
         return {
             "message": "Document processed successfully",
             "doc_id": new_doc.doc_id,
+            "org_id": org_id,
             "records_extracted": len(records),
+            "dataset_file": f"backend/storage/datasets/org_{org_id}.json",
             "slm_output": slm_result
         }
 
@@ -118,5 +120,3 @@ async def upload_document(
             status_code=500,
             detail=f"Processing failed: {str(e)}"
         )
-    
-    
