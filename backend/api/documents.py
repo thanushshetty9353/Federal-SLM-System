@@ -23,7 +23,7 @@ router = APIRouter(prefix="/documents", tags=["Documents"])
 async def upload_document(
     file: UploadFile = File(...),
     db: Session = Depends(get_db),
-    user=Depends(require_role(["ORG"]))  # 🔐 ONLY ORG
+    user=Depends(require_role(["ORG"]))
 ):
     try:
         org_id = user.get("org_id")
@@ -32,7 +32,7 @@ async def upload_document(
             raise HTTPException(status_code=400, detail="Organization not found in token")
 
         # =========================
-        # SAVE FILE (ORG ISOLATION)
+        # SAVE FILE
         # =========================
         org_path = os.path.join(STORAGE_PATH, f"org_{org_id}")
         os.makedirs(org_path, exist_ok=True)
@@ -43,7 +43,7 @@ async def upload_document(
             shutil.copyfileobj(file.file, buffer)
 
         # =========================
-        # HASH (DUPLICATE CHECK)
+        # HASH CHECK
         # =========================
         with open(file_location, "rb") as f:
             file_hash = hashlib.sha256(f.read()).hexdigest()
@@ -85,20 +85,13 @@ async def upload_document(
         db.refresh(ocr_entry)
 
         # =========================
-        # SLM PROCESSING
+        # SLM
         # =========================
         slm_result = process_text(extracted_text, db)
-
         records = slm_result if isinstance(slm_result, list) else [slm_result]
 
-        # =========================
-        # SAVE DATASET (PER ORG)
-        # =========================
         save_records(records, org_id)
 
-        # =========================
-        # SAVE SLM OUTPUT
-        # =========================
         slm_entry = SLMInsights(
             doc_id=ocr_entry.id,
             structured_output=str(slm_result),
@@ -107,9 +100,6 @@ async def upload_document(
 
         db.add(slm_entry)
 
-        # =========================
-        # FINALIZE
-        # =========================
         new_doc.is_processed = True
         db.commit()
 
