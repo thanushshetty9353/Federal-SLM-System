@@ -1,9 +1,9 @@
 from fastapi import Depends, HTTPException, status
 from jose import jwt, JWTError
-from fastapi.security import OAuth2PasswordBearer
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 
-# 🔐 Enables Swagger Authorize button
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
+# 🔥 NEW SECURITY
+security = HTTPBearer()
 
 SECRET_KEY = "secret"
 ALGORITHM = "HS256"
@@ -12,8 +12,12 @@ ALGORITHM = "HS256"
 # =========================
 # GET CURRENT USER
 # =========================
-def get_current_user(token: str = Depends(oauth2_scheme)):
+def get_current_user(
+    credentials: HTTPAuthorizationCredentials = Depends(security)
+):
     try:
+        token = credentials.credentials  # Extract token from Bearer
+
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
 
         user_id = payload.get("user_id")
@@ -40,7 +44,7 @@ def get_current_user(token: str = Depends(oauth2_scheme)):
 
 
 # =========================
-# ROLE CHECKER (RBAC)
+# ROLE CHECKER
 # =========================
 def require_role(roles: list):
     def checker(user=Depends(get_current_user)):
@@ -50,4 +54,5 @@ def require_role(roles: list):
                 detail="Access denied"
             )
         return user
+
     return checker
