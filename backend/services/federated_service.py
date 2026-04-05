@@ -1,6 +1,5 @@
 import torch
 import os
-
 from federated.models.model import get_model
 from backend.models.database import SessionLocal
 from backend.models.user_model import User

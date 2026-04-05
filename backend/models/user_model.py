@@ -7,44 +7,22 @@ from backend.models.database import Base
 class User(Base):
     __tablename__ = "users"
 
-    # =========================
-    # PRIMARY KEY
-    # =========================
     id = Column(Integer, primary_key=True, index=True)
 
-    # =========================
-    # BASIC INFO
-    # =========================
     email = Column(String, unique=True, index=True, nullable=False)
     password = Column(String, nullable=False)
 
-    # =========================
-    # ROLE MANAGEMENT
-    # =========================
-    role = Column(String, nullable=False)  
-    # Values: ADMIN / ORG / RESEARCHER
+    role = Column(String, nullable=False)
 
-    # =========================
-    # 🔥 ORG LINK (CRITICAL)
-    # =========================
     org_id = Column(Integer, nullable=True)
-    # ORG → must have org_id
-    # RESEARCHER → None
-    # ADMIN → None
 
-    # =========================
-    # APPROVAL SYSTEM
-    # =========================
     is_approved = Column(Boolean, default=False)
 
-    # =========================
-    # TIMESTAMPS (GOOD PRACTICE)
-    # =========================
+    # 🔥 NEW FIELD (IMPORTANT)
+    can_download_model = Column(Boolean, default=False)
+
     created_at = Column(DateTime, default=datetime.utcnow)
 
-    # =========================
-    # HELPER METHODS (OPTIONAL)
-    # =========================
     def is_admin(self):
         return self.role == "ADMIN"
 

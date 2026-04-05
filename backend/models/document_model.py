@@ -1,7 +1,6 @@
+import datetime
 from sqlalchemy import Column, Integer, String, TIMESTAMP, Boolean
 from sqlalchemy.orm import relationship
-import datetime
-
 from backend.models.database import Base
 
 
