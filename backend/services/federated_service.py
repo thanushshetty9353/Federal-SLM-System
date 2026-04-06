@@ -1,93 +1,96 @@
 import torch
 import os
 
-from federated.models.model import get_model
 from backend.services.blockchain_service import log_action
 
 
 # =========================
-# 🔥 SAFE WEIGHT AVERAGING
+# 🔥 AVERAGE TWO MODELS (INCREMENTAL)
 # =========================
-def average_weights(weights_list):
-    avg_weights = {}
+def average_two_models(global_weights, local_weights):
+    new_weights = {}
 
-    for key in weights_list[0].keys():
-        avg_weights[key] = sum(w[key] for w in weights_list) / len(weights_list)
+    for key in global_weights.keys():
+        new_weights[key] = (global_weights[key] + local_weights[key]) / 2
 
-    return avg_weights
+    return new_weights
 
 
 # =========================
-# 🔥 GLOBAL MODEL UPDATE
+# 🔥 INCREMENTAL GLOBAL UPDATE
 # =========================
-def update_global_model():
-    print("\n🚀 AUTO GLOBAL UPDATE STARTED\n")
+def update_global_model(org_id):
+    print("\n🚀 INCREMENTAL GLOBAL UPDATE STARTED\n")
 
-    weights_list = []
     base_path = "backend/storage"
 
-    # =========================
-    # 🔍 LOAD ALL ORG MODELS
-    # =========================
-    if not os.path.exists(base_path):
-        print("❌ Storage folder not found")
-        return
-
-    print("📂 Scanning storage folders...\n")
-
-    for folder in os.listdir(base_path):
-        if folder.startswith("org_"):
-            org_id = folder.split("_")[1]
-
-            path = os.path.join(base_path, folder, "local_model.pth")
-
-            print(f"🔍 Checking: {path}")
-
-            if not os.path.exists(path):
-                print(f"⚠️ org_{org_id} model not found")
-                continue
-
-            try:
-                weights = torch.load(path, map_location="cpu")
-                weights_list.append(weights)
-                print(f"✅ Loaded org_{org_id} model")
-
-            except Exception as e:
-                print(f"❌ Error loading org_{org_id}: {e}")
+    local_model_path = os.path.join(base_path, f"org_{org_id}", "local_model.pth")
+    global_model_path = os.path.join(base_path, "global_model.pth")
 
     # =========================
-    # ❌ NO MODELS FOUND
+    # ❌ LOCAL MODEL CHECK
     # =========================
-    if not weights_list:
-        print("❌ No models found for aggregation\n")
+    if not os.path.exists(local_model_path):
+        print(f"❌ Local model not found for org_{org_id}")
         return
 
     # =========================
-    # 🔥 AGGREGATION
+    # ✅ LOAD LOCAL MODEL
     # =========================
-    print("\n⚙️ Aggregating models...\n")
-
-    global_model = get_model()
-
     try:
-        new_weights = average_weights(weights_list)
-        global_model.load_state_dict(new_weights)
+        local_weights = torch.load(local_model_path, map_location="cpu")
+        print(f"✅ Loaded local model from org_{org_id}")
+    except Exception as e:
+        print(f"❌ Failed to load local model: {e}")
+        return
 
+    # =========================
+    # 🆕 FIRST GLOBAL MODEL
+    # =========================
+    if not os.path.exists(global_model_path):
+        print("🆕 No global model found → creating first global model")
+
+        try:
+            torch.save(local_weights, global_model_path)
+            print("✅ GLOBAL MODEL CREATED (FIRST TIME)\n")
+
+            log_action(
+                org_id=org_id,
+                action="GLOBAL_MODEL_INITIALIZED",
+                details="First global model created"
+            )
+
+        except Exception as e:
+            print(f"❌ Failed to create global model: {e}")
+
+        return
+
+    # =========================
+    # 🔁 LOAD EXISTING GLOBAL
+    # =========================
+    try:
+        global_weights = torch.load(global_model_path, map_location="cpu")
+        print("✅ Loaded existing global model")
+    except Exception as e:
+        print(f"❌ Failed to load global model: {e}")
+        return
+
+    # =========================
+    # 🔥 INCREMENTAL UPDATE
+    # =========================
+    try:
+        updated_weights = average_two_models(global_weights, local_weights)
+        print("⚙️ Incremental aggregation done")
     except Exception as e:
         print(f"❌ Aggregation failed: {e}")
         return
 
     # =========================
-    # 💾 SAVE GLOBAL MODEL
+    # 💾 SAVE UPDATED GLOBAL
     # =========================
-    os.makedirs(base_path, exist_ok=True)
-
-    global_model_path = os.path.join(base_path, "global_model.pth")
-
     try:
-        torch.save(global_model.state_dict(), global_model_path)
-        print(f"\n✅ GLOBAL MODEL SAVED at: {global_model_path}\n")
-
+        torch.save(updated_weights, global_model_path)
+        print("✅ GLOBAL MODEL UPDATED (INCREMENTAL)\n")
     except Exception as e:
         print(f"❌ Failed to save global model: {e}")
         return
@@ -97,11 +100,10 @@ def update_global_model():
     # =========================
     try:
         log_action(
-            org_id=0,
-            action="GLOBAL_MODEL_UPDATED",
-            details="Global model aggregated and saved"
+            org_id=org_id,
+            action="GLOBAL_MODEL_UPDATED_INCREMENTAL",
+            details=f"Updated using org_{org_id}"
         )
         print("🔗 Blockchain log added\n")
-
     except Exception as e:
         print(f"⚠️ Blockchain logging failed: {e}")
