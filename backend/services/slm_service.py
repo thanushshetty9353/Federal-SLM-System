@@ -17,8 +17,6 @@ from backend.models.schema_model import SchemaConfig
 # =========================
 api_key = os.getenv("GROQ_API_KEY")
 
-print("🔑 GROQ API KEY:", api_key)
-
 if not api_key:
     raise ValueError("❌ GROQ_API_KEY not found")
 
