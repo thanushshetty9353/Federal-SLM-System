@@ -4,20 +4,25 @@ from datetime import datetime
 
 
 class Block:
-    def __init__(self, index, data, previous_hash, signature=None):
+    def __init__(
+        self,
+        index,
+        data,
+        previous_hash,
+        timestamp=None,
+        nonce=0,
+        hash=None,
+        signature=None
+    ):
         self.index = index
-
-        # ✅ FIXED TIMESTAMP (ISO FORMAT)
-        self.timestamp = datetime.utcnow().isoformat()
-
+        self.timestamp = timestamp or datetime.utcnow().isoformat()
         self.data = data
         self.previous_hash = previous_hash
-        self.nonce = 0
-
-        # 🔐 DIGITAL SIGNATURE
+        self.nonce = nonce
         self.signature = signature
 
-        self.hash = self.calculate_hash()
+        # ✅ ONLY calculate hash if not provided
+        self.hash = hash or self.calculate_hash()
 
     def calculate_hash(self):
         block_string = json.dumps({

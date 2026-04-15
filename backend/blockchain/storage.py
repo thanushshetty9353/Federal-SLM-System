@@ -25,11 +25,12 @@ def load_chain():
         block = Block(
             index=item["index"],
             data=item["data"],
-            previous_hash=item["previous_hash"]
+            previous_hash=item["previous_hash"],
+            timestamp=item["timestamp"],   # ✅ preserve
+            nonce=item["nonce"],           # ✅ preserve
+            hash=item["hash"],             # ✅ preserve
+            signature=item.get("signature")  # ✅ preserve
         )
-        block.timestamp = item["timestamp"]
-        block.nonce = item["nonce"]
-        block.hash = item["hash"]
 
         chain.append(block)
 

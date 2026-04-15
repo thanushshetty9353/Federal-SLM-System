@@ -19,19 +19,19 @@ def average_two_models(global_weights, local_weights):
 # =========================
 # 🔥 INCREMENTAL GLOBAL UPDATE
 # =========================
-def update_global_model(org_id):
-    print("\n🚀 INCREMENTAL GLOBAL UPDATE STARTED\n")
+def update_global_model(org_id, job_id):
+    print(f"\n🚀 INCREMENTAL GLOBAL UPDATE STARTED FOR JOB {job_id}\n")
 
     base_path = "backend/storage"
 
-    local_model_path = os.path.join(base_path, f"org_{org_id}", "local_model.pth")
-    global_model_path = os.path.join(base_path, "global_model.pth")
+    local_model_path = os.path.join(base_path, f"org_{org_id}", f"local_model_job_{job_id}.pth")
+    global_model_path = os.path.join(base_path, f"global_model_job_{job_id}.pth")
 
     # =========================
     # ❌ LOCAL MODEL CHECK
     # =========================
     if not os.path.exists(local_model_path):
-        print(f"❌ Local model not found for org_{org_id}")
+        print(f"❌ Local model not found for org_{org_id} on job_{job_id}")
         return
 
     # =========================
@@ -57,7 +57,7 @@ def update_global_model(org_id):
             log_action(
                 org_id=org_id,
                 action="GLOBAL_MODEL_INITIALIZED",
-                details="First global model created"
+                details=f"First global model created for job {job_id}"
             )
 
         except Exception as e:
@@ -102,7 +102,7 @@ def update_global_model(org_id):
         log_action(
             org_id=org_id,
             action="GLOBAL_MODEL_UPDATED_INCREMENTAL",
-            details=f"Updated using org_{org_id}"
+            details=f"Updated using org_{org_id} for job_{job_id}"
         )
         print("🔗 Blockchain log added\n")
     except Exception as e:

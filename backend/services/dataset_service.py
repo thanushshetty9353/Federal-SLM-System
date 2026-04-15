@@ -5,52 +5,37 @@ import hashlib
 BASE_PATH = "backend/storage/datasets"
 
 
-# =========================
-# GET FILE PATH PER CLIENT
-# =========================
 def get_dataset_path(org_id):
     os.makedirs(BASE_PATH, exist_ok=True)
     return os.path.join(BASE_PATH, f"org_{org_id}.json")
 
 
-# =========================
-# CREATE HASH FOR RECORD
-# =========================
 def get_record_hash(record):
     record_str = json.dumps(record, sort_keys=True)
     return hashlib.sha256(record_str.encode()).hexdigest()
 
 
-# =========================
-# SAVE RECORDS (SMART LOGIC)
-# =========================
 def save_records(records, org_id):
     try:
         path = get_dataset_path(org_id)
 
-        # Load existing data
         if os.path.exists(path):
             with open(path, "r") as f:
                 existing_data = json.load(f)
         else:
             existing_data = []
 
-        # Create hash set for duplicate detection
-        existing_hashes = set(
-            get_record_hash(r) for r in existing_data
-        )
+        existing_hashes = set(get_record_hash(r) for r in existing_data)
 
         new_records = []
 
         for record in records:
             record_hash = get_record_hash(record)
 
-            # Skip duplicate (same image case)
             if record_hash not in existing_hashes:
                 new_records.append(record)
                 existing_hashes.add(record_hash)
 
-        # Append only new records
         final_data = existing_data + new_records
 
         with open(path, "w") as f:
@@ -62,9 +47,6 @@ def save_records(records, org_id):
         print("❌ Error saving dataset:", e)
 
 
-# =========================
-# LOAD DATASET
-# =========================
 def load_dataset(org_id):
     try:
         path = get_dataset_path(org_id)
@@ -80,9 +62,6 @@ def load_dataset(org_id):
         return []
 
 
-# =========================
-# CLEAR DATASET
-# =========================
 def clear_dataset(org_id):
     try:
         path = get_dataset_path(org_id)

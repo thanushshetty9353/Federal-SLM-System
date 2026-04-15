@@ -73,7 +73,9 @@ async def upload_document(
         extracted_text = extract_text(file_location)
 
         if not extracted_text:
-            raise Exception("OCR failed")
+            raise Exception("OCR failed or returned empty text")
+
+        print("\n📄 OCR OUTPUT:\n", extracted_text)
 
         ocr_entry = OCRResult(
             document_id=new_doc.doc_id,
@@ -85,41 +87,21 @@ async def upload_document(
         db.refresh(ocr_entry)
 
         # =========================
-        # SLM / PARSING
+        # 🔥 SLM / SMART PARSING
         # =========================
-        if "radius_mean" in extracted_text:
-            tokens = extracted_text.strip().split()
-            headers = tokens[:6]
-            values = tokens[6:]
+        slm_result = process_text(extracted_text, db)
 
-            records = []
-            row_size = len(headers)
+        records = slm_result if isinstance(slm_result, list) else []
 
-            for i in range(0, len(values), row_size):
-                row = values[i:i + row_size]
-                if len(row) != row_size:
-                    continue
-
-                record = {
-                    "id": int(float(row[0])),
-                    "label": int(float(row[1])),
-                    "radius_mean": float(row[2]),
-                    "texture_mean": float(row[3]),
-                    "perimeter_mean": float(row[4]),
-                    "area_mean": float(row[5]),
-                }
-                records.append(record)
-
-            slm_result = records
-
-        else:
-            slm_result = process_text(extracted_text, db)
-            records = slm_result if isinstance(slm_result, list) else [slm_result]
+        print("\n📦 FINAL RECORDS:", records)
 
         # =========================
         # SAVE DATASET
         # =========================
-        save_records(records, org_id)
+        if records:
+            save_records(records, org_id)
+        else:
+            print("⚠️ No valid records extracted")
 
         # =========================
         # SAVE SLM OUTPUT
@@ -136,7 +118,7 @@ async def upload_document(
         db.commit()
 
         # =========================
-        # 🔥 BLOCKCHAIN LOG
+        # BLOCKCHAIN LOG
         # =========================
         log_action(
             org_id=org_id,

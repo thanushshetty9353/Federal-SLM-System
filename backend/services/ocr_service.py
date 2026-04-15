@@ -13,25 +13,21 @@ def extract_text(file_path: str):
             response = requests.post(
                 OCR_URL,
                 files={"file": f},
-                timeout=30  # ⏱ prevent hanging
+                timeout=30
             )
 
-        # Raise HTTP errors
         response.raise_for_status()
-
         data = response.json()
 
-        # Handle OCR service error response
-        if "error" in data:
-            return f"OCR Service Error: {data['error']}"
+        text = data.get("text", "")
 
-        return data.get("text", "")
+        print("\n📄 OCR RAW TEXT:\n", text)
 
-    except requests.exceptions.ConnectionError:
-        return "OCR API Error: Unable to connect to OCR service (is it running on port 9001?)"
+        if not text.strip():
+            return ""
 
-    except requests.exceptions.Timeout:
-        return "OCR API Error: Request timed out"
+        return text
 
     except Exception as e:
-        return f"OCR API Error: {str(e)}"
+        print("⚠️ OCR FAILED:", e)
+        return ""

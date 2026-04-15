@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
+from sqlalchemy import func
 from pydantic import BaseModel
 
 from backend.models.database import get_db
@@ -31,8 +32,9 @@ def register(data: RegisterRequest, db: Session = Depends(get_db)):
     if existing:
         raise HTTPException(status_code=400, detail="Email already exists")
 
-    if data.role == "ORG" and not data.org_id:
-        raise HTTPException(status_code=400, detail="org_id required")
+    if data.role == "ORG":
+        max_org = db.query(func.max(User.org_id)).scalar()
+        data.org_id = (max_org or 0) + 1
 
     new_user = User(
         email=data.email,

@@ -12,7 +12,7 @@ app.include_router(auth.router, prefix="/auth", tags=["Auth"])
 app.include_router(admin.router, prefix="/admin", tags=["Admin"])
 app.include_router(documents.router)
 app.include_router(slm.router, prefix="/slm", tags=["SLM"])
-app.include_router(schema.router, prefix="/schema", tags=["Schema"])
+app.include_router(schema.router)
 app.include_router(org.router)
 app.include_router(blockchain.router)
 

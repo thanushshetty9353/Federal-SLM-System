@@ -48,10 +48,12 @@ def get_current_user(
 # =========================
 def require_role(roles: list):
     def checker(user=Depends(get_current_user)):
-        if user["role"] not in roles:
+        user_role = str(user.get("role", "")).upper()
+        allowed_roles = [r.upper() for r in roles]
+        if user_role not in allowed_roles:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
-                detail="Access denied"
+                detail=f"Access denied. User role '{user.get('role')}' not in {roles}."
             )
         return user
 

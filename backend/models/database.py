@@ -29,5 +29,6 @@ def get_db():
 def init_db():
     import backend.models.document_model
     import backend.models.ocr_model   # ✅ ADD THIS
+    import backend.models.job_model
 
     Base.metadata.create_all(bind=engine)
