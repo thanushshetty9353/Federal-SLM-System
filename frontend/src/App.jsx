@@ -15,6 +15,7 @@ import JobManagement from './pages/admin/JobManagement'
 import UserManagement from './pages/admin/UserManagement'
 import SchemaBuilder from './pages/admin/SchemaBuilder'
 import ModelAccessPage from './pages/admin/ModelAccessPage'
+import AdminDownloadsPage from './pages/admin/AdminDownloadsPage'
 
 // ORG Pages
 import OrgDashboard from './pages/org/OrgDashboard'
@@ -25,6 +26,7 @@ import DownloadsPage from './pages/org/DownloadsPage'
 
 // Researcher Pages
 import ResearcherDashboard from './pages/researcher/ResearcherDashboard'
+import ResearcherDownloadsPage from './pages/researcher/ResearcherDownloadsPage'
 
 // Shared Pages
 import AnalyticsDashboard from './pages/shared/AnalyticsDashboard'
@@ -64,6 +66,7 @@ export default function App() {
         <Route path="users" element={<UserManagement />} />
         <Route path="schema" element={<SchemaBuilder />} />
         <Route path="model-access" element={<ModelAccessPage />} />
+        <Route path="downloads" element={<AdminDownloadsPage />} />
         <Route path="blockchain" element={<BlockchainAuditor />} />
         <Route path="analytics" element={<AnalyticsDashboard />} />
         <Route index element={<Navigate to="dashboard" replace />} />
@@ -86,6 +89,7 @@ export default function App() {
         <Route path="analytics" element={<AnalyticsDashboard />} />
         <Route path="blockchain" element={<BlockchainAuditor />} />
         <Route path="global-model" element={<GlobalModelViewer />} />
+        <Route path="downloads" element={<ResearcherDownloadsPage />} />
         <Route index element={<Navigate to="dashboard" replace />} />
       </Route>
 

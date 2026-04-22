@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { Download, Lock, Globe, HardDrive, CheckCircle, ShieldCheck } from 'lucide-react'
 import GlassCard from '../../components/ui/GlassCard'
@@ -41,16 +41,6 @@ export default function DownloadsPage() {
     } finally {
       setLoadingJobs(false)
     }
-  }
-
-  const loadUser = async () => {
-    // A quick hack to fetch my status, ideally AuthContext handles this
-    try {
-      const { data } = await orgApi.requestGlobalAccess().catch(async () => {
-        // Just mock it since we don't have a direct /me here easily and /request-global-access returns current state or requests
-      })
-      // We will actually just use the context or assume it's locked down
-    } catch(e) {}
   }
 
   // Initialize hasRequested based on user state

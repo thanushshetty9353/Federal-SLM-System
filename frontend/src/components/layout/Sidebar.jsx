@@ -14,6 +14,7 @@ const adminNav = [
   { label: 'User Management', icon: Users, to: '/admin/users' },
   { label: 'Schema Builder', icon: Database, to: '/admin/schema' },
   { label: 'Model Access', icon: Settings, to: '/admin/model-access' },
+  { label: 'Downloads', icon: Download, to: '/admin/downloads' },
   { label: 'Blockchain', icon: Link2, to: '/admin/blockchain' },
   { label: 'Analytics', icon: BarChart3, to: '/admin/analytics' },
 ]
@@ -32,6 +33,7 @@ const researcherNav = [
   { label: 'Analytics', icon: BarChart3, to: '/researcher/analytics' },
   { label: 'Blockchain', icon: Link2, to: '/researcher/blockchain' },
   { label: 'Global Model', icon: Globe, to: '/researcher/global-model' },
+  { label: 'Downloads', icon: Download, to: '/researcher/downloads' },
 ]
 
 const roleColors = {
