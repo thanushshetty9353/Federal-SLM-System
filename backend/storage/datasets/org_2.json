@@ -1,0 +1,242 @@
+[
+  {
+    "id": 842302,
+    "label": 1,
+    "radius_mean": 17.99,
+    "texture_mean": 10.38,
+    "perimeter_mean": 122.8,
+    "area_mean": 1001.0
+  },
+  {
+    "id": 843786,
+    "label": 1,
+    "radius_mean": 12.45,
+    "texture_mean": 15.7,
+    "perimeter_mean": 82.57,
+    "area_mean": 477.1
+  },
+  {
+    "id": 844981,
+    "label": 1,
+    "radius_mean": 13.0,
+    "texture_mean": 21.82,
+    "perimeter_mean": 87.5,
+    "area_mean": 519.8
+  },
+  {
+    "id": 846226,
+    "label": 1,
+    "radius_mean": 4.0,
+    "texture_mean": 67.0,
+    "perimeter_mean": 24.8,
+    "area_mean": 132.4
+  },
+  {
+    "id": 1123,
+    "label": 8510426,
+    "radius_mean": 0.0,
+    "texture_mean": 13.54,
+    "perimeter_mean": 14.36,
+    "area_mean": 87.46
+  },
+  {
+    "id": 566,
+    "label": 8511133,
+    "radius_mean": 1.0,
+    "texture_mean": 15.34,
+    "perimeter_mean": 14.26,
+    "area_mean": 102.5
+  },
+  {
+    "id": 704,
+    "label": 851509,
+    "radius_mean": 1.0,
+    "texture_mean": 21.16,
+    "perimeter_mean": 23.04,
+    "area_mean": 137.2
+  },
+  {
+    "id": 1404,
+    "label": 852552,
+    "radius_mean": 1.0,
+    "texture_mean": 16.65,
+    "perimeter_mean": 21.38,
+    "area_mean": 110.0
+  },
+  {
+    "id": 904,
+    "label": 852763,
+    "radius_mean": 1.0,
+    "texture_mean": 14.58,
+    "perimeter_mean": 21.53,
+    "area_mean": 97.41
+  },
+  {
+    "id": 644,
+    "label": 853201,
+    "radius_mean": 1.0,
+    "texture_mean": 17.57,
+    "perimeter_mean": 15.05,
+    "area_mean": 115.0
+  },
+  {
+    "id": 850051,
+    "label": 1,
+    "radius_mean": 15.47,
+    "texture_mean": 14.14,
+    "perimeter_mean": 92.47,
+    "area_mean": 742.1
+  },
+  {
+    "id": 850192,
+    "label": 1,
+    "radius_mean": 19.42,
+    "texture_mean": 20.6,
+    "perimeter_mean": 113.42,
+    "area_mean": 757.7
+  },
+  {
+    "id": 850214,
+    "label": 0,
+    "radius_mean": 12.4,
+    "texture_mean": 14.99,
+    "perimeter_mean": 81.27,
+    "area_mean": 1202.6
+  },
+  {
+    "id": 850371,
+    "label": 0,
+    "radius_mean": 16.17,
+    "texture_mean": 18.32,
+    "perimeter_mean": 134.18,
+    "area_mean": 1101.3
+  },
+  {
+    "id": 850460,
+    "label": 1,
+    "radius_mean": 17.11,
+    "texture_mean": 18.75,
+    "perimeter_mean": 75.96,
+    "area_mean": 1375.9
+  },
+  {
+    "id": 850520,
+    "label": 1,
+    "radius_mean": 10.56,
+    "texture_mean": 12.96,
+    "perimeter_mean": 148.95,
+    "area_mean": 919.4
+  },
+  {
+    "id": 850682,
+    "label": 1,
+    "radius_mean": 17.29,
+    "texture_mean": 25.51,
+    "perimeter_mean": 131.78,
+    "area_mean": 531.6
+  },
+  {
+    "id": 850786,
+    "label": 0,
+    "radius_mean": 12.05,
+    "texture_mean": 22.4,
+    "perimeter_mean": 85.9,
+    "area_mean": 1184.6
+  },
+  {
+    "id": 850874,
+    "label": 1,
+    "radius_mean": 10.78,
+    "texture_mean": 25.03,
+    "perimeter_mean": 70.44,
+    "area_mean": 1236.9
+  },
+  {
+    "id": 850974,
+    "label": 0,
+    "radius_mean": 21.39,
+    "texture_mean": 24.32,
+    "perimeter_mean": 135.24,
+    "area_mean": 1017.4
+  },
+  {
+    "id": 851087,
+    "label": 0,
+    "radius_mean": 21.59,
+    "texture_mean": 19.57,
+    "perimeter_mean": 126.55,
+    "area_mean": 1248.1
+  },
+  {
+    "id": 851123,
+    "label": 0,
+    "radius_mean": 19.7,
+    "texture_mean": 24.75,
+    "perimeter_mean": 128.32,
+    "area_mean": 943.2
+  },
+  {
+    "id": 851202,
+    "label": 0,
+    "radius_mean": 13.66,
+    "texture_mean": 11.42,
+    "perimeter_mean": 131.7,
+    "area_mean": 975.0
+  },
+  {
+    "id": 851321,
+    "label": 0,
+    "radius_mean": 11.17,
+    "texture_mean": 13.14,
+    "perimeter_mean": 75.92,
+    "area_mean": 870.3
+  },
+  {
+    "id": 851452,
+    "label": 1,
+    "radius_mean": 18.21,
+    "texture_mean": 10.72,
+    "perimeter_mean": 98.68,
+    "area_mean": 428.0
+  },
+  {
+    "id": 851501,
+    "label": 1,
+    "radius_mean": 15.28,
+    "texture_mean": 15.21,
+    "perimeter_mean": 79.27,
+    "area_mean": 518.7
+  },
+  {
+    "id": 851687,
+    "label": 1,
+    "radius_mean": 11.46,
+    "texture_mean": 16.22,
+    "perimeter_mean": 139.05,
+    "area_mean": 434.6
+  },
+  {
+    "id": 851729,
+    "label": 1,
+    "radius_mean": 15.94,
+    "texture_mean": 14.34,
+    "perimeter_mean": 119.86,
+    "area_mean": 1100.1
+  },
+  {
+    "id": 851837,
+    "label": 1,
+    "radius_mean": 10.41,
+    "texture_mean": 23.26,
+    "perimeter_mean": 96.47,
+    "area_mean": 745.8
+  },
+  {
+    "id": 851901,
+    "label": 0,
+    "radius_mean": 20.91,
+    "texture_mean": 15.71,
+    "perimeter_mean": 75.08,
+    "area_mean": 959.4
+  }
+]

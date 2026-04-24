@@ -1,0 +1,253 @@
+[
+    {
+        "index": 0,
+        "timestamp": "2026-04-19T17:07:47.085995",
+        "data": {
+            "msg": "Genesis Block"
+        },
+        "previous_hash": "0",
+        "nonce": 1402,
+        "signature": null,
+        "hash": "0002550af04c41638c83351474f9b31e1a2611bcf4126b65030bd448422cb437"
+    },
+    {
+        "index": 1,
+        "timestamp": "2026-04-22T15:54:29.337664",
+        "data": {
+            "org_id": 1,
+            "action": "DOCUMENT_PROCESSED",
+            "doc_hash": "1873924ee1d460e99474048d6f6144d9ed34ad4cc0907203ae11ef6c1d5669d1",
+            "details": "Code_Generated_Image (1).png",
+            "signature": "124147f10eea27f574fd54272b43ccb005574fb07819e8a8d7ee363ba88a38bcb778b18be9cb95682ae2968945ef6f062e72f40ba9041cc9ffa22c41fead8961afb318a28eb015c7c4eefb239e4915ff1854f4a9825a0b2d0db72abb1273cd24d52595dd6a641c8810ffb7c93be4be579fe007238034958e32ca4bfa71b30a555669ef692e6cce14b0adf9db83bea896c201c92e4b5ede973296aeaccf4c7221f0c3c97878532e8e4b6ac818fc8fd941bde46c02fea5ed94412d5d9c6ee95b6b55784ec87cf14119e3422948323aaf43c88ea03fbcaeafaaebf0502669bbb123c04242b24db552c3c37924989855655508c7b91770020e0c1a16e54a387af20b"
+        },
+        "previous_hash": "0002550af04c41638c83351474f9b31e1a2611bcf4126b65030bd448422cb437",
+        "nonce": 1313,
+        "signature": null,
+        "hash": "00055ad3acff210153648d375575e71270294b7e8987aa514618b5263c1f8121"
+    },
+    {
+        "index": 2,
+        "timestamp": "2026-04-22T15:55:20.669443",
+        "data": {
+            "org_id": 1,
+            "action": "LOCAL_TRAINING_DONE",
+            "doc_hash": null,
+            "details": "Local model trained for org_1 on job_2",
+            "signature": "13338e85e4d722f9962353e4fa32dd752d6d05acf14714816072e4eca966eab601c4dfaa4eb14bc7541a17ced864edeb88a28012f8ebbe22078d760d94e161a1aeb238f6bdc37f6b25437b4e602503a318e039a53c71d6eff036c51b500f4dece8e425ef3f9f50a9c7da88f286dc53e85efc7254eb1c7ca4aa1ef89d3cca6bbb4ed26f6d67ad9afe48460b7a35fe039774593885f733725042a2f2252bdb0b79e66cce16ef3720df32bd0d3be142f4ee8d6c2d704f9cfaf1edece8c104ac92350a51dd11abda579715c745a466d96a00b50b68bb44068f0b9ec603717ffe8652f2058db6ceeaeb3708e8d5651dea186a0f8dde2cafbe000ac1067623a7648a31"
+        },
+        "previous_hash": "00055ad3acff210153648d375575e71270294b7e8987aa514618b5263c1f8121",
+        "nonce": 11049,
+        "signature": null,
+        "hash": "00057adf5cee968140703430851d4339b0acf5813bd4716e47ea81b76194cc12"
+    },
+    {
+        "index": 3,
+        "timestamp": "2026-04-22T15:55:20.877494",
+        "data": {
+            "org_id": 1,
+            "action": "GLOBAL_MODEL_INITIALIZED",
+            "doc_hash": null,
+            "details": "First global model created for job 2",
+            "signature": "13dc186e0cda5c002fc7f926ba056c20c9964bbc5ed1eeb1a1f0004113b034bf557fb832f1923eb8ad0d8c4c5255ae177adb725adb22780d9e09dd06e895b8ca1770e2881c1c76357bf16d299263f0c9ffbd67f843a511b4d04b1574bdd6b1243dc4c978b7b9cc14f2872ce13ef83decb672a2ee7b89ae1ccc8245e1723a1764d6ab3adb6fadd305fa214d8f5bce7e23d3baec6d3e46381bf8c442701b4090383006f368506d029d4a8f0afae5d9c42c71e54c82c5377a05525a241d2c76ec3f63422063e33a032166929a0a47a8f3af6d7d5ba64c95d49a82fd5c23c0dc223222d0e795092c8c62fd1b210127b1b9e2bc4232d19176b9de31bb7aa687590873"
+        },
+        "previous_hash": "00057adf5cee968140703430851d4339b0acf5813bd4716e47ea81b76194cc12",
+        "nonce": 5045,
+        "signature": null,
+        "hash": "00066fdd3c099fc3de0356f39fe54b624d83c910ef66daf2f7fc55606a6c07d1"
+    },
+    {
+        "index": 4,
+        "timestamp": "2026-04-22T15:55:45.349560",
+        "data": {
+            "org_id": 1,
+            "action": "LOCAL_TRAINING_DONE",
+            "doc_hash": null,
+            "details": "Local model trained for org_1 on job_2",
+            "signature": "13338e85e4d722f9962353e4fa32dd752d6d05acf14714816072e4eca966eab601c4dfaa4eb14bc7541a17ced864edeb88a28012f8ebbe22078d760d94e161a1aeb238f6bdc37f6b25437b4e602503a318e039a53c71d6eff036c51b500f4dece8e425ef3f9f50a9c7da88f286dc53e85efc7254eb1c7ca4aa1ef89d3cca6bbb4ed26f6d67ad9afe48460b7a35fe039774593885f733725042a2f2252bdb0b79e66cce16ef3720df32bd0d3be142f4ee8d6c2d704f9cfaf1edece8c104ac92350a51dd11abda579715c745a466d96a00b50b68bb44068f0b9ec603717ffe8652f2058db6ceeaeb3708e8d5651dea186a0f8dde2cafbe000ac1067623a7648a31"
+        },
+        "previous_hash": "00066fdd3c099fc3de0356f39fe54b624d83c910ef66daf2f7fc55606a6c07d1",
+        "nonce": 5227,
+        "signature": null,
+        "hash": "000836c6f598a720d4adaebf5333044fa38d67d9475d91a9f9f073f02caf8032"
+    },
+    {
+        "index": 5,
+        "timestamp": "2026-04-22T15:55:45.463153",
+        "data": {
+            "org_id": 1,
+            "action": "GLOBAL_MODEL_UPDATED_INCREMENTAL",
+            "doc_hash": null,
+            "details": "Updated using org_1 for job_2",
+            "signature": "33cfce577c346c63d9207cb7861dbdb4d1a8f06bc779c717dba44e02391643b0c076c2b5d43be044ca41272c204dc2c36c0c7ce21721ba99e68e7bfa48f1819f1380340a8d5c17375febfd54c7b797c6f8530d65acf2eff2cd62336fb7bad229dc3490708400c0beb654283b28f4ae422105f3b419f69c36e98759628f382200a9ae8967021949def19245a3fb1a4a6e8dc31c6e38f1558a8dcd0d27239b14f0f7e2a36e98d30401e018ce78d0933644b8b5a5fe51d5e948e87ef8ff8ca231b27cba1d34791feda116cc5bd30f2b9cd7ad8e7f0e693b41520bb1ae36ca7af80f486ee9c803977d00b3aa1986d2a47cac5ea0c1ab81fb8f8194ccb3308519ef2a"
+        },
+        "previous_hash": "000836c6f598a720d4adaebf5333044fa38d67d9475d91a9f9f073f02caf8032",
+        "nonce": 6376,
+        "signature": null,
+        "hash": "00074bc486238a708cc3ed18d0cbbc38918800cbdb6189b6925b2bcbf9b6990c"
+    },
+    {
+        "index": 6,
+        "timestamp": "2026-04-22T15:56:16.860833",
+        "data": {
+            "org_id": 1,
+            "action": "LOCAL_TRAINING_DONE",
+            "doc_hash": null,
+            "details": "Local model trained for org_1 on job_1",
+            "signature": "5d33bc358cb506b1f62407c4d34d65751662c2bae1c627eb5d6cb0dca6b357d553263ebc3861e08d4264e57eb1b3f980eb4f3f80893a170c160d5fe4da15c0d92d4c138c0a02c29eea5d91f4a51072d8c469d4420cef37c921ca380bf6496130d46fdc7d74130aaa7b950dffaf6ed4f5635a82a286ca2a03ed5148b36a06585d9744ca19ef2da16988a65dcd42a510914de979dc91dc32a0146aff16e15d2a9ea2c92e7764989e8a131eda800d086470d63ad0b73c2598fb94ba1c65625aceca82bf31250110e69b6b9dfedd197252f00ed61c75a8269184b7ccc107b861f04549cde3602cd4c34fbec71cc6a9a49a5e567ca29b1e165ea06e4a24acf552098c"
+        },
+        "previous_hash": "00074bc486238a708cc3ed18d0cbbc38918800cbdb6189b6925b2bcbf9b6990c",
+        "nonce": 1446,
+        "signature": null,
+        "hash": "000ca6b138f0592dc2f3f6513faf3b3d1a808e1064deed9889ff81e707fff9fc"
+    },
+    {
+        "index": 7,
+        "timestamp": "2026-04-22T15:56:16.940407",
+        "data": {
+            "org_id": 1,
+            "action": "GLOBAL_MODEL_INITIALIZED",
+            "doc_hash": null,
+            "details": "First global model created for job 1",
+            "signature": "1308866d8a8c08e16446a00d22ccc79b70b65bd6812ba2f1d6712de916f426d0a73c9f3480dbd0a72f14be33510e07db31d9ace8c611c84d1fdda10ddb6ac374a9d28b247abb76622bcf72d4f348ee2bf3cc5f37883c38bcecaf1d4db9af940d49a59dba8497c3a7031962078ffc3bef97be4989d5afc02304b7eddc5863a5229d935ca16cdfa5bbd8e42f57b7264466b60bd57cb0cc0153c7de016adba38908478d326fc5d8ff089d8d16c4feb0b7491bd0c64c160c38a5438f028d7647dc2da8fbc8748e9550d4660cc6f8bae2757c71c974c843172c548b6dad31803b376add32fc6c9d93797edadb79a4de3103bd4b2498ea89d0ea7eb72a13086aaf2dfd"
+        },
+        "previous_hash": "000ca6b138f0592dc2f3f6513faf3b3d1a808e1064deed9889ff81e707fff9fc",
+        "nonce": 19278,
+        "signature": null,
+        "hash": "000e45bd1efa9440a91dbd0f11909110cdd9d553714168cee42b1586ef987338"
+    },
+    {
+        "index": 8,
+        "timestamp": "2026-04-22T15:56:24.451303",
+        "data": {
+            "org_id": 1,
+            "action": "LOCAL_TRAINING_DONE",
+            "doc_hash": null,
+            "details": "Local model trained for org_1 on job_1",
+            "signature": "5d33bc358cb506b1f62407c4d34d65751662c2bae1c627eb5d6cb0dca6b357d553263ebc3861e08d4264e57eb1b3f980eb4f3f80893a170c160d5fe4da15c0d92d4c138c0a02c29eea5d91f4a51072d8c469d4420cef37c921ca380bf6496130d46fdc7d74130aaa7b950dffaf6ed4f5635a82a286ca2a03ed5148b36a06585d9744ca19ef2da16988a65dcd42a510914de979dc91dc32a0146aff16e15d2a9ea2c92e7764989e8a131eda800d086470d63ad0b73c2598fb94ba1c65625aceca82bf31250110e69b6b9dfedd197252f00ed61c75a8269184b7ccc107b861f04549cde3602cd4c34fbec71cc6a9a49a5e567ca29b1e165ea06e4a24acf552098c"
+        },
+        "previous_hash": "000e45bd1efa9440a91dbd0f11909110cdd9d553714168cee42b1586ef987338",
+        "nonce": 712,
+        "signature": null,
+        "hash": "0004b50e984e896ae8e5aebe0220d46073dfbb9aa81706bc246af4eefba09379"
+    },
+    {
+        "index": 9,
+        "timestamp": "2026-04-22T15:56:24.518719",
+        "data": {
+            "org_id": 1,
+            "action": "GLOBAL_MODEL_UPDATED_INCREMENTAL",
+            "doc_hash": null,
+            "details": "Updated using org_1 for job_1",
+            "signature": "51c81f40d60ed263c0fafcc9804e64acaddad4578a54905d34b1912a47ddf2eb79b10ee1ac78832d39e793abc68aca52daffbd88e25b24f5e32ba7b85957c0b52dbfabe19cf9ed5466b4fe5eb4d5112af2c4a0e6f22aaed44cb6cc31cb337f5d7af43467b2c79dad7744785ee87c2b44cb4258ad1ea1eca0509126ce1b89f3baf56947c5135c03629ef96c616bfba6662b36833e9100c495ba40a21539115ec2643722ff7211cb6272743378b7417658eb19bea4087c48e1e4667adf2eb968a99f96fa6bcdbf9964d9693eb633e06ad95ed5ecfa1ffbf71de6bf187816260fda36e7f0bc8916c7ba8fe3dff5bbb9bfffc3755888ddd55cf69fbda8a81c3a5de6"
+        },
+        "previous_hash": "0004b50e984e896ae8e5aebe0220d46073dfbb9aa81706bc246af4eefba09379",
+        "nonce": 14328,
+        "signature": null,
+        "hash": "000e530d420e7ec7bb4530d2287e3aa132dc35e4f376b7bc83e6147dbb6fedfa"
+    },
+    {
+        "index": 10,
+        "timestamp": "2026-04-22T15:58:04.199991",
+        "data": {
+            "org_id": 2,
+            "action": "DOCUMENT_PROCESSED",
+            "doc_hash": "9217f1e119e181c7298ac1f9a4a07619d42413aa13882b7eac7d2e15996ddb96",
+            "details": "Code_Generated_Image.png",
+            "signature": "75086f4d1ed7a7106fea4d920a657aac311a502e42b5ab76fe064a2c0806cf71cc09118f34bc93e455e2e44591d2f05f0b1a6d1b1538e4ff71e0fc3335b502a9e5439083e4eb35fc5ae04c1302b7bee36f31c041b82d1979f5a93239b37b22aa172ba40fe63cd3f0a7bc461d4094ad7e1d6fd3f957ab6cf1e8b6d6fe26f4843678302b9c43e8b285f0938c2502c34b55f31e2349be3701ccfbd5709476471b7aa2cb4e4d4a03fc450cb19ece8b7bbf07cc7540d5d0125334e9d2b291c75a24607da189b011dcc98609bb55ba07dfbcce14ec1fbd5e6bae573591f61796c71be46bca51abc5a4b90592a701ff9f82cf5669a54cdef185f5c588769f4569a2a6d9"
+        },
+        "previous_hash": "000e530d420e7ec7bb4530d2287e3aa132dc35e4f376b7bc83e6147dbb6fedfa",
+        "nonce": 614,
+        "signature": null,
+        "hash": "0009ba25a9d8b8335de977c6fa96950bfe902546c710f90988641a8af8817bc7"
+    },
+    {
+        "index": 11,
+        "timestamp": "2026-04-22T15:58:34.177737",
+        "data": {
+            "org_id": 2,
+            "action": "DOCUMENT_PROCESSED",
+            "doc_hash": "1873924ee1d460e99474048d6f6144d9ed34ad4cc0907203ae11ef6c1d5669d1",
+            "details": "Code_Generated_Image (1).png",
+            "signature": "2d8dd619ccf3af56907076f671e99db5b99ac8f6009baea05d7fea5909390f78e838f4cdc8dc018d4cdd5f4902923e4887dd562ddf7cf2bcce793b91e7b89e26dbae127021d21b23e32198f602d235a3755f61e0f19552d4ba111db8bb5c5429c52927c1c060b49a88422f6250dcf64b5751349aba8d1299bc8cf087dd46e9b9826b88941d34162f58a076ca8405692023f7543918d36b27d1dc31b0faf396daf623f0ace5104ac55505fe5d75efe7070541e31c4c7bbabd9189e2c32034036ebe9163a4ab7588b14309a580d6f9e6b8debe11c2f01fba45c04fa648df8a9374449375243be8da524b2c092e3278349eaeb00b11d3e4bf91d46e24d34cab3e33"
+        },
+        "previous_hash": "0009ba25a9d8b8335de977c6fa96950bfe902546c710f90988641a8af8817bc7",
+        "nonce": 4377,
+        "signature": null,
+        "hash": "0004077929b195e911618f77cb6c9616b98c84b1f7886619a710ae2bce480cd0"
+    },
+    {
+        "index": 12,
+        "timestamp": "2026-04-22T15:58:56.692638",
+        "data": {
+            "org_id": 2,
+            "action": "LOCAL_TRAINING_DONE",
+            "doc_hash": null,
+            "details": "Local model trained for org_2 on job_1",
+            "signature": "75c03ab74aba570db08c27ab162fbb1be6c6ea8827bc70731d1346ebb9502df7d8a1c93250e000660b6b071856fcf3bd63507e0b4541632e752f319225cab70561aab1ef12eb0c32327d837e9b59288d9d367707dd05dac7d0808530e32dfa1ddfaa0c1e8433234f4cfd43f26b55f52a284547a5471fa36ec8b50bdb1d68b1f01b34a26c29d9d8907bbac8d672daf6817d0e6948108ca7d78d9094f6a17c0cab58abae97c7b1328e20bd9df2900d77cef15cc58f0561690e2586955bbfc0cce854ba1eeeec320bab5321a1ba86e6c6141a7515107317bfd2a85d48c056a7ae17ba1d6a30028dd4d61a6b066dc4348290bac66f654d83b7fa4acd3aa149844cad"
+        },
+        "previous_hash": "0004077929b195e911618f77cb6c9616b98c84b1f7886619a710ae2bce480cd0",
+        "nonce": 1593,
+        "signature": null,
+        "hash": "000944f351de36821e6208b19431b588a52210a09e8ff91d1937b5518b594ebb"
+    },
+    {
+        "index": 13,
+        "timestamp": "2026-04-22T15:58:56.770596",
+        "data": {
+            "org_id": 2,
+            "action": "GLOBAL_MODEL_UPDATED_INCREMENTAL",
+            "doc_hash": null,
+            "details": "Updated using org_2 for job_1",
+            "signature": "9a2281b089740c64525ad5e54cf0db7841f990966590cf328916d8aade3f0a57ac0191fe753cf6c76f1553a4086b94b30f21b0538bb7f50fec3060cb4fcc7a67f76766ab94e8917d296c80eba81fbd42aa684846da130ee3b1889993ca8d924545cde91d999a2429fd66b9bdb23b7214b58c25af55a9065699bb70e5d3bcb645b9882e542195890ffed422d0c9338091e001039013f28af0691ff7e6467e9b2573333c1daa7b656af02cf7cc648c064cbfd0271cbc8f6e7d560e62e8df584df3e823bf616e6574e53d74c587b492ea021e785bc34c0db773b8ca8c26255e4c8d3babddb48e79fa01612784e0aeaf4a17f5747294e1426f3b2e8a351153d2e4f6"
+        },
+        "previous_hash": "000944f351de36821e6208b19431b588a52210a09e8ff91d1937b5518b594ebb",
+        "nonce": 10828,
+        "signature": null,
+        "hash": "000fae5aa73b66d578c7b5a61da14413fa0d2991e3990926bd85a0a473b90d95"
+    },
+    {
+        "index": 14,
+        "timestamp": "2026-04-22T15:59:15.810127",
+        "data": {
+            "org_id": 2,
+            "action": "DOCUMENT_PROCESSED",
+            "doc_hash": "9217f1e119e181c7298ac1f9a4a07619d42413aa13882b7eac7d2e15996ddb96",
+            "details": "Code_Generated_Image.png",
+            "signature": "75086f4d1ed7a7106fea4d920a657aac311a502e42b5ab76fe064a2c0806cf71cc09118f34bc93e455e2e44591d2f05f0b1a6d1b1538e4ff71e0fc3335b502a9e5439083e4eb35fc5ae04c1302b7bee36f31c041b82d1979f5a93239b37b22aa172ba40fe63cd3f0a7bc461d4094ad7e1d6fd3f957ab6cf1e8b6d6fe26f4843678302b9c43e8b285f0938c2502c34b55f31e2349be3701ccfbd5709476471b7aa2cb4e4d4a03fc450cb19ece8b7bbf07cc7540d5d0125334e9d2b291c75a24607da189b011dcc98609bb55ba07dfbcce14ec1fbd5e6bae573591f61796c71be46bca51abc5a4b90592a701ff9f82cf5669a54cdef185f5c588769f4569a2a6d9"
+        },
+        "previous_hash": "000fae5aa73b66d578c7b5a61da14413fa0d2991e3990926bd85a0a473b90d95",
+        "nonce": 850,
+        "signature": null,
+        "hash": "000ca359986b3812cbc0adf184f16917c2bf64546c66c7445dcf3c388e2bfaef"
+    },
+    {
+        "index": 15,
+        "timestamp": "2026-04-22T15:59:30.912182",
+        "data": {
+            "org_id": 2,
+            "action": "LOCAL_TRAINING_DONE",
+            "doc_hash": null,
+            "details": "Local model trained for org_2 on job_2",
+            "signature": "8faed37bfe4767bf73fbe1e0b6b21c1512502737ef2e34a544cf4f2ecc3ed642812b60446768a17c23ec8f9fe9e4d805ede4f6fb74917e961faf9bdb079c34b7a7fc784d9879ddd53d3a96f052ec6e2417041d62f8a2845ffece1ea5655cc3b3e3e0e18d5981bd1ed0ed9e5dfe308e9b5d27f469f3f1710e450bffe6602f86434cd485d6e9e21adfd5bfa877697766b4765a53dd4fbd51e873b1833af635a7ad83bd0e8d227531d7ba62af08f7ee37e83c391533abc1be59655be7e40f92390d15f50b0fc99c0a1834c01cc165fa10d33bc01d6606d9c22116cf10ab70ebbd1734ef7edb356b8b15b776d6952bb163c7ec610a6e9f73c0dbab5a315c3f7f8e23"
+        },
+        "previous_hash": "000ca359986b3812cbc0adf184f16917c2bf64546c66c7445dcf3c388e2bfaef",
+        "nonce": 4684,
+        "signature": null,
+        "hash": "0006224ac72f03e82a9589289385750657c5207718c4fa6782980612b6aeeb83"
+    },
+    {
+        "index": 16,
+        "timestamp": "2026-04-22T15:59:31.050655",
+        "data": {
+            "org_id": 2,
+            "action": "GLOBAL_MODEL_UPDATED_INCREMENTAL",
+            "doc_hash": null,
+            "details": "Updated using org_2 for job_2",
+            "signature": "0e4d93a40dda91550c6e1f801cb8d8284841bdcbda6b969be539d785871a2e68f01670e3cb137483e67ee4ff81d5be5c2db9a4350dd16c5d10565a6d614ede7dd1cb78f68c299fcd2c8626aeec17e24ef842db2fe78fa4371b0acdda6c9fbde4f00889e38bb5a6067ca34fc8277bbedf7b56bbadea7b3ab5380a41c12d48fc26d9e360917df06a4977b7bb5df296f7c908df9c2e95c7f81fbe3ebc612c73029300185613c554592d7a61919d27a83a1e972efdee95e9899b41e336048c83c1e89f5ba32d32b784737388b78db05537b0b6850553cc9838b57740b2e32fd2e9f98ee8a5f613950e085fbf8b293073f556cf4def953f78d49cca098ab245fd6a9c"
+        },
+        "previous_hash": "0006224ac72f03e82a9589289385750657c5207718c4fa6782980612b6aeeb83",
+        "nonce": 1235,
+        "signature": null,
+        "hash": "000393f7f4ab1d9659b5ed7bd62bf5879afb3617b543422d8709aa4c9eacee55"
+    }
+]
