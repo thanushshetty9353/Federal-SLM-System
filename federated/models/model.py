@@ -2,27 +2,57 @@ import torch
 import torch.nn as nn
 
 
+# =====================================
+# DYNAMIC MODEL
+# =====================================
+
 class SimpleModel(nn.Module):
-    def __init__(self):
+
+    def __init__(self, input_size):
+
         super(SimpleModel, self).__init__()
 
-        # Example: binary classification
-        self.fc = nn.Linear(1, 2)
+        # Dynamic input layer
+        self.fc = nn.Linear(input_size, 2)
 
     def forward(self, x):
+
         return self.fc(x)
 
 
-def get_model():
-    return SimpleModel()
+# =====================================
+# CREATE MODEL
+# =====================================
 
+def get_model(input_size):
+
+    return SimpleModel(input_size)
+
+
+# =====================================
+# SAVE MODEL
+# =====================================
 
 def save_model(model, path):
-    torch.save(model.state_dict(), path)
+
+    torch.save(
+        model.state_dict(),
+        path
+    )
 
 
-def load_model(path):
-    model = get_model()
-    model.load_state_dict(torch.load(path))
+# =====================================
+# LOAD MODEL
+# =====================================
+
+def load_model(path, input_size):
+
+    model = get_model(input_size)
+
+    model.load_state_dict(
+        torch.load(path)
+    )
+
     model.eval()
+
     return model

@@ -1,18 +1,10 @@
-import json
-import os
+import pandas as pd
 
-DATASET_PATH = "federated/client/client_data.json"
+from backend.services.dataset_service import (
+    save_dataset
+)
 
 
-def save_record(record):
-    if not os.path.exists(DATASET_PATH):
-        with open(DATASET_PATH, "w") as f:
-            json.dump([], f)
+def save_local_dataset(df, org_id):
 
-    with open(DATASET_PATH, "r") as f:
-        data = json.load(f)
-
-    data.append(record)
-
-    with open(DATASET_PATH, "w") as f:
-        json.dump(data, f, indent=2)
+    return save_dataset(df, org_id)

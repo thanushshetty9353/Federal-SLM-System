@@ -63,7 +63,7 @@ def create_schema(
 def get_schema(
     doc_type: str,
     db: Session = Depends(get_db),
-    user=Depends(require_role(["ADMIN", "RESEARCHER"]))  # 🔐
+    user=Depends(require_role(["ADMIN", "RESEARCHER", "ORG"]))  # 🔐
 ):
     schema = db.query(SchemaConfig).filter(
         SchemaConfig.doc_type == doc_type
@@ -86,7 +86,7 @@ def get_schema(
 @router.get("/")
 def get_all_schemas(
     db: Session = Depends(get_db),
-    user=Depends(require_role(["ADMIN", "RESEARCHER"]))  # 🔐
+    user=Depends(require_role(["ADMIN", "RESEARCHER", "ORG"]))  # 🔐
 ):
     schemas = db.query(SchemaConfig).all()
 

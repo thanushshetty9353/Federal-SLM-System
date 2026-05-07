@@ -32,6 +32,7 @@ import ResearcherDownloadsPage from './pages/researcher/ResearcherDownloadsPage'
 import AnalyticsDashboard from './pages/shared/AnalyticsDashboard'
 import BlockchainAuditor from './pages/shared/BlockchainAuditor'
 import GlobalModelViewer from './pages/shared/GlobalModelViewer'
+import ModelTestingPage from './pages/shared/ModelTestingPage'
 
 const PrivateRoute = ({ children, roles }) => {
   const { user, loading } = useAuth()
@@ -69,6 +70,7 @@ export default function App() {
         <Route path="downloads" element={<AdminDownloadsPage />} />
         <Route path="blockchain" element={<BlockchainAuditor />} />
         <Route path="analytics" element={<AnalyticsDashboard />} />
+        <Route path="model-testing" element={<ModelTestingPage />} />
         <Route index element={<Navigate to="dashboard" replace />} />
       </Route>
 
@@ -80,6 +82,7 @@ export default function App() {
         <Route path="training" element={<TrainingPage />} />
         <Route path="downloads" element={<DownloadsPage />} />
         <Route path="blockchain" element={<BlockchainAuditor />} />
+        <Route path="model-testing" element={<ModelTestingPage />} />
         <Route index element={<Navigate to="dashboard" replace />} />
       </Route>
 
@@ -90,6 +93,7 @@ export default function App() {
         <Route path="blockchain" element={<BlockchainAuditor />} />
         <Route path="global-model" element={<GlobalModelViewer />} />
         <Route path="downloads" element={<ResearcherDownloadsPage />} />
+        <Route path="model-testing" element={<ModelTestingPage />} />
         <Route index element={<Navigate to="dashboard" replace />} />
       </Route>
 

@@ -5,7 +5,7 @@ import { useAuth } from '../../context/AuthContext'
 import {
   LayoutDashboard, Users, FileText, Brain, Download,
   Link2, BarChart3, Globe, ChevronLeft, ChevronRight,
-  Shield, Upload, Database, Settings, Briefcase
+  Shield, Upload, Database, Settings, Briefcase, FlaskConical
 } from 'lucide-react'
 
 const adminNav = [
@@ -15,6 +15,7 @@ const adminNav = [
   { label: 'Schema Builder', icon: Database, to: '/admin/schema' },
   { label: 'Model Access', icon: Settings, to: '/admin/model-access' },
   { label: 'Downloads', icon: Download, to: '/admin/downloads' },
+  { label: 'Model Testing', icon: FlaskConical, to: '/admin/model-testing' },
   { label: 'Blockchain', icon: Link2, to: '/admin/blockchain' },
   { label: 'Analytics', icon: BarChart3, to: '/admin/analytics' },
 ]
@@ -25,6 +26,7 @@ const orgNav = [
   { label: 'Upload Docs', icon: Upload, to: '/org/upload' },
   { label: 'Training', icon: Brain, to: '/org/training' },
   { label: 'Downloads', icon: Download, to: '/org/downloads' },
+  { label: 'Model Testing', icon: FlaskConical, to: '/org/model-testing' },
   { label: 'Blockchain', icon: Link2, to: '/org/blockchain' },
 ]
 
@@ -34,6 +36,7 @@ const researcherNav = [
   { label: 'Blockchain', icon: Link2, to: '/researcher/blockchain' },
   { label: 'Global Model', icon: Globe, to: '/researcher/global-model' },
   { label: 'Downloads', icon: Download, to: '/researcher/downloads' },
+  { label: 'Model Testing', icon: FlaskConical, to: '/researcher/model-testing' },
 ]
 
 const roleColors = {

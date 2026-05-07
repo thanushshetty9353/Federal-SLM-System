@@ -1,8 +1,9 @@
 from fastapi import FastAPI
-from backend.api import documents, slm, schema, auth, admin, org
+from backend.api import documents, slm, schema, auth, admin, org, model_test
 from backend.models.database import init_db
-from backend.models import ocr_model, slm_model, schema_model, user_model
+from backend.models import ocr_model, slm_model, schema_model, user_model, model_test_db
 from backend.api import blockchain
+from backend.api import train
 
 app = FastAPI(title="Federated Document Intelligence")
 
@@ -15,6 +16,8 @@ app.include_router(slm.router, prefix="/slm", tags=["SLM"])
 app.include_router(schema.router)
 app.include_router(org.router)
 app.include_router(blockchain.router)
+app.include_router(model_test.router)
+app.include_router(train.router)
 
 @app.get("/")
 def root():
