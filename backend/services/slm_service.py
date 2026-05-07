@@ -1,24 +1,19 @@
 import json
-import os
 import re
-from dotenv import load_dotenv
-from groq import Groq
+
+from sqlalchemy.orm import Session
+from langchain_core.prompts import PromptTemplate
+
 from backend.models.schema_model import SchemaConfig
-
-load_dotenv(dotenv_path=".env")
-
-api_key = os.getenv("GROQ_API_KEY")
-
-if not api_key:
-    raise ValueError("❌ GROQ_API_KEY not found")
-
-client = Groq(api_key=api_key)
+from backend.services.ollama_service import generate_response
+from backend.services.prompt_service import build_prompt
 
 
 # =========================
 # FETCH SCHEMA
 # =========================
 def get_schema(db, doc_type):
+
     schema = db.query(SchemaConfig).filter(
         SchemaConfig.doc_type == doc_type
     ).first()
@@ -33,13 +28,15 @@ def get_schema(db, doc_type):
 # CLEAN TEXT
 # =========================
 def clean_text(text):
+
     return re.sub(r"\s+", " ", text).strip()
 
 
 # =========================
-# 🔥 SMART NUMBER PARSER
+# SMART NUMERIC PARSER
 # =========================
 def extract_numeric_records(text):
+
     numbers = re.findall(r"\d+\.\d+|\d+", text)
 
     print("\n🔢 EXTRACTED NUMBERS:", numbers)
@@ -48,9 +45,11 @@ def extract_numeric_records(text):
         return []
 
     records = []
+
     row_size = 6
 
     for i in range(0, len(numbers), row_size):
+
         row = numbers[i:i + row_size]
 
         if len(row) != row_size:
@@ -65,7 +64,9 @@ def extract_numeric_records(text):
                 "perimeter_mean": float(row[4]),
                 "area_mean": float(row[5]),
             }
+
             records.append(record)
+
         except Exception:
             continue
 
@@ -73,60 +74,101 @@ def extract_numeric_records(text):
 
 
 # =========================
-# MAIN FUNCTION
+# MAIN SLM FUNCTION
 # =========================
-def process_text(text, db, doc_type="cancer"):
-    print("\n🚀 USING SMART SLM")
+def process_text(
+    text,
+    db: Session = None,
+    doc_type="cancer"
+):
+
+    print("\n🚀 USING OLLAMA + LANGCHAIN")
 
     cleaned_text = clean_text(text)
 
-    print("\n📄 CLEAN TEXT:\n", cleaned_text)
+    print("\n📄 CLEANED TEXT:\n", cleaned_text)
 
-    # 🔥 STEP 1: TRY NUMERIC PARSING
+    # ===================================
+    # STEP 1 — TRY NUMERIC EXTRACTION
+    # ===================================
+
     records = extract_numeric_records(cleaned_text)
 
     if records:
+
         print("\n✅ Parsed using numeric extraction")
+
         return records
 
-    # 🔥 STEP 2: FALLBACK TO GROQ
-    schema = get_schema(db, doc_type)
+    # ===================================
+    # STEP 2 — FETCH SCHEMA
+    # ===================================
+
+    schema = get_schema(db, doc_type) if db else None
 
     if not schema:
-        print("⚠️ No schema found → returning raw text")
-        return [{"raw_text": cleaned_text[:200]}]
+
+        print("⚠️ No schema found")
+
+        return [{
+            "raw_text": cleaned_text[:300]
+        }]
 
     fields = list(schema.keys())
 
-    prompt = f"""
-Extract structured data.
+    # ===================================
+    # STEP 3 — BUILD PROMPT
+    # ===================================
 
-Fields: {fields}
+    prompt_template = build_prompt(
+        fields=fields,
+        text=cleaned_text
+    )
 
-Return JSON array only.
+    template = PromptTemplate(
+        input_variables=[],
+        template=prompt_template
+    )
 
-TEXT:
-{cleaned_text}
-"""
+    final_prompt = template.format()
+
+    print("\n🧠 FINAL PROMPT:\n", final_prompt)
+
+    # ===================================
+    # STEP 4 — OLLAMA INFERENCE
+    # ===================================
 
     try:
-        response = client.chat.completions.create(
-            model="llama-3.1-8b-instant",
-            messages=[{"role": "user", "content": prompt}],
-            temperature=0
-        )
 
-        output = response.choices[0].message.content
+        response = generate_response(final_prompt)
 
-        print("\n🧠 GROQ OUTPUT:\n", output)
+        print("\n🤖 OLLAMA RESPONSE:\n", response)
 
-        start = output.find("[")
-        end = output.rfind("]")
+        # ===================================
+        # STEP 5 — EXTRACT JSON
+        # ===================================
+
+        start = response.find("[")
+        end = response.rfind("]")
 
         if start != -1 and end != -1:
-            return json.loads(output[start:end + 1])
+
+            json_output = response[start:end + 1]
+
+            return json.loads(json_output)
+
+        # fallback object
+        start = response.find("{")
+        end = response.rfind("}")
+
+        if start != -1 and end != -1:
+
+            json_output = response[start:end + 1]
+
+            return json.loads(json_output)
 
     except Exception as e:
-        print("❌ GROQ ERROR:", e)
+
+        print("\n❌ OLLAMA ERROR:", e)
 
     return []
