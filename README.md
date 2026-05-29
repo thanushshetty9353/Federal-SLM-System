@@ -495,6 +495,14 @@ npm run dev
 🌐 Portfolio:
 [thanush-shetty-portfolio.vercel.app](https://thanush-shetty-portfolio.vercel.app/?utm_source=chatgpt.com)
 
+## Shreyas Nayak
+
+📧 Email:
+`shreyasnayak78@gmail.com`
+
+🌐 Portfolio:
+[shreyas.nayak-portfolio.vercel.app](https://your-story-studio.vercel.app/)
+
 ---
 
 # 📜 License
