@@ -456,33 +456,6 @@ uvicorn backend.main:app --reload --port 8000
 cd frontend
 npm run dev
 ```
-
----
-
-## Start Federated Server
-
-```bash
-python -m federated.server.server
-```
-
----
-
-## Start Federated Client
-
-```bash
-python -m federated.client.client 1
-```
-
----
-
-# 🐳 Docker Deployment
-
-Docker Compose support is included.
-
-```bash
-docker-compose up --build
-```
-
 ---
 
 # 📊 Use Cases
