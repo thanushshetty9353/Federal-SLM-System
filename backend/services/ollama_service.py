@@ -1,11 +1,11 @@
-from langchain_community.llms.ollama import Ollama
+from langchain_ollama import OllamaLLM
 
 from backend.config.settings import (
     OLLAMA_MODEL,
     OLLAMA_BASE_URL
 )
 
-llm = Ollama(
+llm = OllamaLLM(
     model=OLLAMA_MODEL,
     base_url=OLLAMA_BASE_URL
 )

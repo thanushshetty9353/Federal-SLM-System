@@ -1,6 +1,5 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
-
 from backend.services.ocr_service import extract_text
 from backend.services.slm_service import process_text
 from backend.models.database import get_db
@@ -8,7 +7,6 @@ from backend.models.ocr_model import OCRResult
 from backend.services.blockchain_service import log_action
 
 router = APIRouter()
-
 
 @router.post("/ocr/extract")
 def run_ocr(
