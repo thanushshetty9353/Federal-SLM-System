@@ -493,7 +493,7 @@ npm run dev
 `thanushshetty7@gmail.com`
 
 🌐 Portfolio:
-[thanush-shetty-portfolio.vercel.app](https://thanush-shetty-portfolio.vercel.app/?utm_source=chatgpt.com)
+[thanush-shetty-portfolio.vercel.app](https://thanush-shetty-portfolio.vercel.app/)
 
 ## Shreyas Nayak
 
